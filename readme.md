@@ -1,6 +1,6 @@
 # Handoff Analyst
 
-> A Pulse 2026 SC demo showing how a CSM could interact with Gainsight and its satellite products through a **headless, AI-orchestrated experience** — surfacing everything they need to take over a new account in under 30 seconds.
+> A Pulse 2026 SC demo showing how a CSM could interact with Gainsight CS and its connected products through a **headless, AI-orchestrated experience** — surfacing everything they need to take over a new account in under 30 seconds.
 
 ![Status](https://img.shields.io/badge/status-demo-purple) ![Built for](https://img.shields.io/badge/built%20for-Pulse%202026-blue) ![Hosting](https://img.shields.io/badge/hosting-GitHub%20Pages-black)
 
