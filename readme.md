@@ -1,6 +1,6 @@
 # Handoff Analyst
 
-> A Pulse 2026 SC demo showing how a CSM could interact with Gainsight CS and its connected products through a **headless, AI-orchestrated experience** — surfacing everything they need to take over a new account in under 30 seconds.
+> A Pulse 2026 SC demo showing how a CSM could interact with Gainsight and its satellite products through a **headless, AI-orchestrated experience** — surfacing everything they need to take over a new account in under 30 seconds.
 
 ![Status](https://img.shields.io/badge/status-demo-purple) ![Built for](https://img.shields.io/badge/built%20for-Pulse%202026-blue) ![Hosting](https://img.shields.io/badge/hosting-GitHub%20Pages-black)
 
@@ -8,21 +8,38 @@
 
 ## The Concept
 
-User personas are about to start interacting with Gainsight and its connected products through Claude or other "headless" model interfaces — not just the Gainsight UI. The **Handoff Analyst** is one persona-shaped agent view, built for the moment a **CSM takes over a brand-new account from presales/onboarding**.
+User personas are about to start interacting with Gainsight and its satellite products through Claude or other "headless" model interfaces — not just the Gainsight UI. The **Handoff Analyst** is one persona-shaped agent view, built for the moment a **CSM takes over a brand-new account from presales/onboarding**.
 
 Instead of spending 2–3 days digging through C360, Timeline, Cockpit, Staircase, PX, Community, and Skilljar to piece together what happened during the sale, the agent does it for them and presents one synthesized view:
 
 - What was promised or discussed during presales
 - Who the stakeholders are and how they feel
-- What's been adopted (and what hasn't) across the connected tools
+- What's been adopted (and what hasn't) across the satellite tools
 - Where the risks and expansion levers are
-- What the CSM should actually do this week
+- **Where the systems disagree, and what to actually trust**
+- What the CSM should do this week
 
-The dashboard is for **Abbett**, a representative Enterprise account in the CSMCP-Demo tenant ($275K ARR, ~34 days from renewal, in active expansion).
+The dashboard is built for **Abbett**, a representative Enterprise account in the CSMCP-Demo tenant ($275K ARR, ~34 days from renewal, in active expansion).
+
+---
+
+## Design Principle: Synthesis, Not Display
+
+The dashboard intentionally avoids regurgitating data the CSM can already find in C360. A health score chart, a list of CTAs, a renewal date — those exist a million places. The agent's job is **synthesis and judgment**, so every panel earns its place by doing one of:
+
+1. **Aggregating across multiple systems** that the CSM would otherwise have to open separately
+2. **Reading and rewriting** what's there into a narrative form the source UI doesn't provide
+3. **Reconciling conflicts** between systems and making a judgment call
+4. **Recommending an action**, not just describing a state
+
+If a panel can be replaced by "go look at C360," it shouldn't be on this dashboard.
 
 ---
 
 ## What's on the Dashboard
+
+### Sticky Navigation Rail
+Just under the header, a sticky nav bar with jump-to links: Brief · Signal Reconciliation · Commitments · Stakeholders · Signals · Risks · Plans · Ask Analyst. Stays pinned as you scroll so the CSM can jump between panels without scrolling back to the top.
 
 ### 1. Header
 Account identity at a glance — industry, segment, region, status, lifecycle stage — with a prominent countdown to renewal date so the time pressure is visible immediately.
@@ -38,10 +55,24 @@ This is the "wow" moment — a CSM who reads only this panel walks away with the
 ### 3. Top Stats Strip
 Six headline numbers: Current ARR, Renewable ARR, Open Upsell, Health Score, Staircase Sentiment, Customer Lifetime.
 
-### 4. Health Trajectory
-- 3-month overall health trend line (61 → 74, with the inflection point in early March)
-- Group-level breakdown: Outcomes Health (85, Green), Experience Health (78, Green), Community & Education (68, Yellow), AI Insights (45, Red, declining)
-- Weight percentages so the CSM understands which groups actually drive the rollup
+### 4. Cross-System Signal Reconciliation
+**The flagship agent panel.** Six different systems are measuring this account's health and saying very different things:
+
+- Gainsight rollup: **74 Green**
+- Scorecard AI Insights group: **45 Red, declining**
+- Staircase AI: **100, strongly positive**
+- PX: **−20% usage drop**
+- Support: **10+ open tickets**
+- Cockpit: **17 open risk CTAs**
+
+The agent explains *why* the systems disagree (Staircase reflects executive conversations; PX/Cockpit reflect end-user reality; the Gainsight rollup averages both and is misleading), and gives a decision-by-decision guide on which signal to trust:
+
+- **Renewal commercial story** → Staircase + rollup
+- **Internal risk forecasting** → AI Insights + PX
+- **Expansion conversation** → Don't pitch Analytics until DAU recovers
+- **Exec reporting** → Cite both, don't hide the split
+
+This is the panel that exists nowhere in the Gainsight UI today.
 
 ### 5. Commitments & Promises from Presales
 Synthesized from Staircase conversations + Gainsight timeline. Three filter categories:
@@ -62,7 +93,7 @@ Eight key contacts with engagement signal (Champion / Engaged / Watchful), depth
 - Plus four more
 
 ### 7. Adoption & Engagement Signals
-Cross-product signals from the connected tools — each row tagged with its source connector:
+Cross-product signals from the satellite tools — each row tagged with its source connector:
 - **PX**: Logged in, 137 of 210 users active
 - **Community**: Topics & Replies, Identified Advocates
 - **Skilljar**: Learning Path completion, failed Academy course
@@ -155,7 +186,7 @@ That's it. First publish takes 1–2 minutes. Subsequent pushes deploy in second
 Push any change to `main` and GitHub Pages redeploys automatically. To update the underlying data, edit the constants at the top of the `<script>` block in `index.html`:
 
 - `ACCOUNT` — top-level account metadata
-- `HEALTH` — scorecard history and group breakdown
+- `SIGNALS_TABLE` — the six conflicting signal rows in the Reconciliation panel
 - `STAIRCASE` — Staircase sentiment number
 - `COMMITMENTS` — presales commitments and value
 - `STAKEHOLDERS` — contact map
@@ -176,16 +207,19 @@ A clean 3-minute flow for SC team rehearsal:
 **0:15 — Hero brief (30s)**
 > "30-second brief. $275K ARR, renewal in 34 days, signed 2-year term. But health is Green at 74 *while* the account is carrying 17 open risk CTAs — the relationship is recovering, operational health is lagging. Three explicit Week 1 priorities."
 
-**0:45 — Commitments panel (45s)**
-> "This is the one that actually saves CSMs days of work. Every number sales quoted in the deal — 34% ROI, 91% deliverability, 55% less manual work — auto-pulled from Staircase conversations and Gainsight timeline. Filter by Commitments and you see what hasn't been delivered yet: Advanced Analytics implementation plan, 15–20% capacity uplift. These are the things that get forgotten in handoff today."
+**0:45 — Signal Reconciliation (60s) — the wow moment**
+> "Here's the panel you can't get anywhere else. Six different systems are measuring this account's health and they disagree. Gainsight says 74 Green. Scorecard AI Insights says 45 Red. Staircase says 100, strongly positive. PX says usage dropped 20%. The agent doesn't just show this — it explains *why* they disagree (executive conversations vs. end-user reality), and then tells the CSM which signal to trust for which decision. Don't pitch Advanced Analytics until DAU recovers, because PX numbers will get questioned. Report Green to execs but cite the risk CTA load. This is the synthesis no Gainsight UI gives them today."
 
-**1:30 — Source badges (30s)**
-> "Look at the badges on every panel. PX, Community, Skilljar, Staircase, Scorecard — the agent is reading from every product in the portfolio and synthesizing. The CSM never logs into seven tools. This is the 'headless Gainsight' story."
+**1:45 — Commitments panel (30s)**
+> "This one saves the CSM days of work. Every number sales quoted in the deal — 34% ROI, 91% deliverability, 55% less manual work — auto-pulled from Staircase conversations. Filter by Commitments and you see what hasn't been delivered yet: Advanced Analytics plan, 15–20% capacity uplift. These are what gets forgotten in handoff today."
 
-**2:00 — Ask the Analyst (45s)**
-> "And it's interactive. Eight pre-canned questions a CSM would actually ask, grounded in the real data. *'Who are the executive stakeholders?'* — Sarah Johnson, Michael Chen, David Patel, here's the entry strategy on each. *'What's the renewal motion?'* — chase Michael for headcount projections, deliver the analytics plan, book the sponsor call. The agent doesn't just surface data; it tells the CSM what to do."
+**2:15 — Source badges (15s)**
+> "And look at the badges on every panel. PX, Community, Skilljar, Staircase, Scorecard — the agent reads from every product in the portfolio and synthesizes. The CSM never logs into seven tools."
 
-**2:45 — Land (15s)**
+**2:30 — Ask the Analyst (30s)**
+> "And it's interactive. Eight pre-canned questions a CSM would actually ask. *'Who are the stakeholders?'* — Sarah Johnson, Michael Chen, David Patel, here's the entry strategy on each. The agent doesn't just surface data; it tells the CSM what to do."
+
+**3:00 — Land (10s)**
 > "This is one persona view. Same pattern works for Renewal Analyst, Risk Analyst, EBR Analyst, Onboarding Analyst. Headless Gainsight isn't a chatbot — it's purpose-built agents for the moments customer success teams actually need them."
 
 ---
@@ -195,10 +229,11 @@ A clean 3-minute flow for SC team rehearsal:
 The dashboard is intentionally **single-file** with no framework dependency beyond CDN-loaded React + Recharts. This keeps the deployment story dead simple:
 
 - React 18 (CDN) — UI rendering
-- Recharts 2.10 (CDN) — health trend chart, with a bar-chart fallback if CDN fails
+- Recharts 2.10 (CDN, optional) — included as a dependency but no longer essential after the Health Trajectory panel was replaced
 - Babel Standalone (CDN) — in-browser JSX compilation so we don't need a build step
 - Inline `<script type="text/babel">` for the dashboard logic
 - All data as JS constants at the top of the script block
+- A try/catch around the root render so any failure shows on-screen rather than producing a black page
 
 No localStorage, no backend, no auth, no API keys, no build process.
 
@@ -218,8 +253,8 @@ handoff-analyst-demo/
 
 - **Live MCP calls** via a thin proxy (Cloudflare Worker / Vercel function) so the dashboard refreshes in real time
 - **Live Q&A** wired to Anthropic API so the analyst answers ad-hoc questions from the CSM, not just pre-canned ones
-- **Multi-account selector** to demo across Abbett US/UK/APAC or other accounts
-- **Other persona views** — Renewal Analyst, Onboarding Analyst, EBR Analyst, Risk Analyst
+- **Active section highlighting** in the sticky nav (intersection observer-style) as you scroll
+- **Other persona views** — Renewal Analyst, Onboarding Analyst, EBR Analyst, Risk Analyst, each with its own Signal Reconciliation tailored to its decisions
 - **Embed mode** so the same agent could be surfaced inside Gainsight C360 as a panel
 
 ---

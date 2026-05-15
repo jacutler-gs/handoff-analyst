@@ -360,74 +360,93 @@ const TopStats = () => (
 );
 
 // ============================================================
-// Health
+// Signal Reconciliation — pure agent synthesis
 // ============================================================
-const HealthSection = () => (
-  <Card style={{ marginBottom: 24 }}>
-    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16, flexWrap: 'wrap', gap: 12 }}>
-      <div>
+const SIGNALS_TABLE = [
+  { system: 'Gainsight', source: 'Gainsight', score: '74', label: 'Green', tone: 'green', read: 'Rollup says the account is healthy.' },
+  { system: 'Scorecard · AI Insights group', source: 'Scorecard', score: '45', label: 'Red, declining', tone: 'red', read: 'Internal AI is flagging deterioration.' },
+  { system: 'Staircase AI', source: 'Staircase', score: '100', label: 'Strongly positive', tone: 'green', read: 'Conversation sentiment is at the top of the range.' },
+  { system: 'PX', source: 'PX', score: '−20%', label: 'Usage drop', tone: 'red', read: 'DAU collapsed to 35% of licensed seats.' },
+  { system: 'Support', source: 'Gainsight', score: '10+', label: 'Open tickets', tone: 'yellow', read: 'Backlog has not cleared since April 15.' },
+  { system: 'Cockpit', source: 'Cockpit', score: '17', label: 'Open risk CTAs', tone: 'red', read: 'Heaviest risk load in the renewal cohort.' },
+];
+
+const SignalReconciliation = () => {
+  const tone = { green: 'var(--green)', yellow: 'var(--yellow)', red: 'var(--red)' };
+  return (
+    <Card style={{ marginBottom: 24 }}>
+      <div style={{ marginBottom: 16 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4, flexWrap: 'wrap' }}>
-          <h2 style={{ fontSize: 16, fontWeight: 600 }}>Health Trajectory</h2>
-          <SourceBadges sources={['Scorecard']} />
+          <h2 style={{ fontSize: 16, fontWeight: 600 }}>Cross-System Signal Reconciliation</h2>
+          <SourceBadges sources={['Gainsight', 'Staircase', 'PX', 'Scorecard']} />
         </div>
-        <div style={{ fontSize: 12, color: 'var(--text-dim)' }}>3-month trend · Enterprise Health scorecard</div>
+        <div style={{ fontSize: 12, color: 'var(--text-dim)' }}>The systems disagree. Here's how the agent reads the conflict.</div>
       </div>
-      <Pill color="var(--green)" bg="rgba(63,206,150,0.12)">{HEALTH.label} {HEALTH.overall}</Pill>
-    </div>
-    <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: 24 }}>
-      <div style={{ minHeight: 220 }}>
-        {hasRecharts ? (
-          <ResponsiveContainer width="100%" height={220}>
-            <LineChart data={HEALTH.history} margin={{ top: 10, right: 10, bottom: 0, left: -20 }}>
-              <defs>
-                <linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0%" stopColor="#8b5cf6" />
-                  <stop offset="100%" stopColor="#06b6d4" />
-                </linearGradient>
-              </defs>
-              <XAxis dataKey="date" stroke="#6b7290" fontSize={11} tickLine={false} axisLine={false} interval={1} />
-              <YAxis stroke="#6b7290" fontSize={11} tickLine={false} axisLine={false} domain={[40, 100]} />
-              <Tooltip contentStyle={{ background: '#161929', border: '1px solid #2a2f44', borderRadius: 8 }} />
-              <Line type="monotone" dataKey="score" stroke="url(#lineGrad)" strokeWidth={3} dot={{ fill: '#8b5cf6', r: 4 }} activeDot={{ r: 6 }} />
-            </LineChart>
-          </ResponsiveContainer>
-        ) : (
-          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', height: 220, padding: '20px 0', gap: 4 }}>
-            {HEALTH.history.map((h, i) => (
-              <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-                <div style={{ fontSize: 10, color: 'var(--text)', fontWeight: 600 }}>{h.score}</div>
-                <div style={{
-                  width: '100%', maxWidth: 24,
-                  height: ((h.score - 40) / 60) * 160,
-                  background: 'linear-gradient(180deg, #8b5cf6, #06b6d4)',
-                  borderRadius: '4px 4px 0 0'
-                }} />
-                <div style={{ fontSize: 9, color: 'var(--text-faint)' }}>{h.date}</div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-        {HEALTH.groups.map((g) => (
-          <div key={g.name} style={{ background: 'rgba(0,0,0,0.2)', borderRadius: 10, padding: 12 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-              <div style={{ fontSize: 13, fontWeight: 500 }}>{g.name}</div>
-              <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-                <span style={{ fontSize: 11, color: 'var(--text-faint)' }}>{g.weight}%</span>
-                <span style={{ fontSize: 16, fontWeight: 700, color: g.color }}>{g.score}</span>
-                <span style={{ fontSize: 12 }}>{g.trend === 'up' ? '↑' : g.trend === 'down' ? '↓' : '→'}</span>
-              </div>
+
+      <div style={{ display: 'grid', gap: 8, marginBottom: 20 }}>
+        {SIGNALS_TABLE.map((s, i) => (
+          <div key={i} style={{
+            display: 'grid', gridTemplateColumns: '180px 80px 1fr', gap: 16, alignItems: 'center',
+            padding: '10px 14px', background: 'rgba(0,0,0,0.2)', borderRadius: 8,
+            borderLeft: '3px solid ' + tone[s.tone]
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <SourceBadge source={s.source} />
             </div>
-            <div style={{ height: 4, background: 'rgba(255,255,255,0.05)', borderRadius: 2, overflow: 'hidden' }}>
-              <div style={{ width: g.score + '%', height: '100%', background: g.color, borderRadius: 2 }} />
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <div style={{ fontSize: 18, fontWeight: 700, color: tone[s.tone], lineHeight: 1 }}>{s.score}</div>
+              <div style={{ fontSize: 10, color: 'var(--text-faint)', marginTop: 2 }}>{s.label}</div>
+            </div>
+            <div style={{ fontSize: 13, color: 'var(--text-dim)' }}>
+              <span style={{ color: 'var(--text)', fontWeight: 500 }}>{s.system}.</span> {s.read}
             </div>
           </div>
         ))}
       </div>
-    </div>
-  </Card>
-);
+
+      <div style={{
+        background: 'rgba(139,92,246,0.08)',
+        border: '1px solid rgba(139,92,246,0.25)',
+        borderRadius: 12,
+        padding: 18,
+        borderLeft: '3px solid var(--accent)'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+          <span style={{ fontSize: 14 }}>🧠</span>
+          <div style={{ fontSize: 11, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: 1.5, fontWeight: 600 }}>Agent Synthesis</div>
+        </div>
+        <p style={{ fontSize: 14, lineHeight: 1.65, color: 'var(--text)', marginBottom: 14 }}>
+          The systems disagree because they're measuring different things at different speeds. <strong>Staircase reflects the most recent executive conversations</strong> — Sarah Johnson said "confidence has been restored" and the 2-year term got signed, so sentiment correctly reads strong. <strong>PX and Cockpit reflect what's happening on the ground</strong> — end users are logging in less, support tickets aren't clearing, and Sally hasn't executed the adoption assurance plan yet.
+        </p>
+        <p style={{ fontSize: 14, lineHeight: 1.65, color: 'var(--text-dim)', marginBottom: 16 }}>
+          The Gainsight rollup (74 Green) is averaging across both, which is why it looks fine and why it's misleading. <strong style={{ color: 'var(--text)' }}>The relationship is recovering, but the operational signals are running 4–6 weeks behind that recovery.</strong> Expect AI Insights and PX to follow Staircase up — but only if the operational work gets done.
+        </p>
+
+        <div style={{ background: 'rgba(0,0,0,0.25)', borderRadius: 10, padding: 14 }}>
+          <div style={{ fontSize: 11, color: 'var(--accent-2)', textTransform: 'uppercase', letterSpacing: 1.5, fontWeight: 600, marginBottom: 10 }}>Which signal to trust for which decision</div>
+          <div style={{ display: 'grid', gap: 8, fontSize: 13 }}>
+            <div style={{ display: 'flex', gap: 12 }}>
+              <span style={{ color: 'var(--accent-2)', fontWeight: 600, minWidth: 200 }}>Renewal commercial story →</span>
+              <span style={{ color: 'var(--text-dim)' }}>Staircase + Gainsight rollup. Lead with sentiment recovery and the signed term.</span>
+            </div>
+            <div style={{ display: 'flex', gap: 12 }}>
+              <span style={{ color: 'var(--accent-2)', fontWeight: 600, minWidth: 200 }}>Internal risk forecasting →</span>
+              <span style={{ color: 'var(--text-dim)' }}>AI Insights + PX. They're the leading indicators of where the next 90 days are headed.</span>
+            </div>
+            <div style={{ display: 'flex', gap: 12 }}>
+              <span style={{ color: 'var(--accent-2)', fontWeight: 600, minWidth: 200 }}>Expansion conversation →</span>
+              <span style={{ color: 'var(--text-dim)' }}>Don't pitch Advanced Analytics until DAU recovers. PX numbers will get questioned.</span>
+            </div>
+            <div style={{ display: 'flex', gap: 12 }}>
+              <span style={{ color: 'var(--accent-2)', fontWeight: 600, minWidth: 200 }}>Exec status reporting →</span>
+              <span style={{ color: 'var(--text-dim)' }}>Cite both. Report Green health with a caveat on the 17 open risk CTAs. Don't hide the split.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Card>
+  );
+};
 
 // ============================================================
 // Commitments
@@ -704,22 +723,81 @@ const Footer = () => (
 );
 
 // ============================================================
+// Sticky Nav
+// ============================================================
+const NAV_SECTIONS = [
+  { id: 'brief', label: 'Brief' },
+  { id: 'reconciliation', label: 'Signal Reconciliation' },
+  { id: 'commitments', label: 'Commitments' },
+  { id: 'stakeholders', label: 'Stakeholders' },
+  { id: 'signals', label: 'Signals' },
+  { id: 'risks', label: 'Risks' },
+  { id: 'plans', label: 'Plans' },
+  { id: 'qa', label: 'Ask Analyst' },
+];
+
+const StickyNav = () => {
+  const scrollTo = (id) => {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+  return (
+    <div style={{
+      position: 'sticky', top: 0, zIndex: 10,
+      background: 'rgba(10,11,20,0.85)',
+      backdropFilter: 'blur(12px)',
+      borderBottom: '1px solid var(--border)',
+      padding: '12px 40px'
+    }}>
+      <div style={{ maxWidth: 1400, margin: '0 auto', display: 'flex', gap: 4, flexWrap: 'wrap', alignItems: 'center' }}>
+        <div style={{ fontSize: 10, color: 'var(--text-faint)', textTransform: 'uppercase', letterSpacing: 1.5, marginRight: 12 }}>Jump to</div>
+        {NAV_SECTIONS.map((s) => (
+          <button key={s.id} onClick={() => scrollTo(s.id)} style={{
+            padding: '6px 12px', borderRadius: 8, fontSize: 12, fontWeight: 500,
+            border: '1px solid transparent',
+            background: 'transparent',
+            color: 'var(--text-dim)',
+            cursor: 'pointer',
+            transition: 'all 0.15s'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = 'rgba(139,92,246,0.12)';
+            e.currentTarget.style.color = 'var(--accent)';
+            e.currentTarget.style.borderColor = 'rgba(139,92,246,0.3)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = 'transparent';
+            e.currentTarget.style.color = 'var(--text-dim)';
+            e.currentTarget.style.borderColor = 'transparent';
+          }}>{s.label}</button>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// ============================================================
 // App
 // ============================================================
 const App = () => (
-  <div style={{ maxWidth: 1400, margin: '0 auto' }}>
-    <Header />
-    <div style={{ padding: '24px 40px' }}>
-      <HandoffBrief />
-      <TopStats />
-      <HealthSection />
-      <Commitments />
-      <Stakeholders />
-      <EngagementAndRisk />
-      <SuccessPlans />
-      <AskAnalyst />
+  <div>
+    <div style={{ maxWidth: 1400, margin: '0 auto' }}>
+      <Header />
     </div>
-    <Footer />
+    <StickyNav />
+    <div style={{ maxWidth: 1400, margin: '0 auto' }}>
+      <div style={{ padding: '24px 40px' }}>
+        <div id="brief"><HandoffBrief /></div>
+        <TopStats />
+        <div id="reconciliation"><SignalReconciliation /></div>
+        <div id="commitments"><Commitments /></div>
+        <div id="stakeholders"><Stakeholders /></div>
+        <div id="signals"><div id="risks"><EngagementAndRisk /></div></div>
+        <div id="plans"><SuccessPlans /></div>
+        <div id="qa"><AskAnalyst /></div>
+      </div>
+      <Footer />
+    </div>
   </div>
 );
 
