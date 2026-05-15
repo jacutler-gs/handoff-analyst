@@ -1,6 +1,6 @@
 # Handoff Analyst
 
-> A Pulse 2026 SC demo showing how a CSM could interact with Gainsight and its satellite products through a **headless, AI-orchestrated experience** — surfacing everything they need to take over a new account in under 30 seconds.
+> A Pulse 2026 SC demo showing how a CSM could interact with Gainsight and its connected products through a **headless, AI-orchestrated experience** — surfacing everything they need to take over a new account in under 30 seconds.
 
 ![Status](https://img.shields.io/badge/status-demo-purple) ![Built for](https://img.shields.io/badge/built%20for-Pulse%202026-blue) ![Hosting](https://img.shields.io/badge/hosting-GitHub%20Pages-black)
 
@@ -8,13 +8,13 @@
 
 ## The Concept
 
-User personas are about to start interacting with Gainsight and its satellite products through Claude or other "headless" model interfaces — not just the Gainsight UI. The **Handoff Analyst** is one persona-shaped agent view, built for the moment a **CSM takes over a brand-new account from presales/onboarding**.
+User personas are about to start interacting with Gainsight and its connected products through Claude or other "headless" model interfaces — not just the Gainsight UI. The **Handoff Analyst** is one persona-shaped agent view, built for the moment a **CSM takes over a brand-new account from presales/onboarding**.
 
 Instead of spending 2–3 days digging through C360, Timeline, Cockpit, Staircase, PX, Community, and Skilljar to piece together what happened during the sale, the agent does it for them and presents one synthesized view:
 
 - What was promised or discussed during presales
 - Who the stakeholders are and how they feel
-- What's been adopted (and what hasn't) across the satellite tools
+- What's been adopted (and what hasn't) across the connected tools
 - Where the risks and expansion levers are
 - **Where the systems disagree, and what to actually trust**
 - What the CSM should do this week
@@ -93,7 +93,7 @@ Eight key contacts with engagement signal (Champion / Engaged / Watchful), depth
 - Plus four more
 
 ### 7. Adoption & Engagement Signals
-Cross-product signals from the satellite tools — each row tagged with its source connector:
+Cross-product signals from the connected tools — each row tagged with its source connector:
 - **PX**: Logged in, 137 of 210 users active
 - **Community**: Topics & Replies, Identified Advocates
 - **Skilljar**: Learning Path completion, failed Academy course
