@@ -101,24 +101,113 @@ const HEALTH = {
 
 const STAIRCASE = { sentiment: 100 };
 
-const COMMITMENTS = [
-  { type: "value", category: "ROI", text: "34% ROI improvement delivered", source: "Q3 Business Review" },
-  { type: "value", category: "Productivity", text: "25% productivity gain achieved", source: "Q3 BR" },
-  { type: "value", category: "Automation Pilot", text: "42% campaign-efficiency improvement", source: "Pilot results" },
-  { type: "value", category: "Engagement", text: "28% higher engagement on automated journeys", source: "Pilot results" },
-  { type: "value", category: "Time Saved", text: "15 hours/week saved per campaign manager", source: "Q3 BR" },
-  { type: "value", category: "Deliverability", text: "91% deliverability to financial domains", source: "Q3 BR" },
-  { type: "value", category: "Manual Work", text: "55% reduction in manual campaign management time", source: "Q3 BR" },
-  { type: "value", category: "Speed", text: "40% faster campaign development", source: "Q3 BR" },
-  { type: "value", category: "Pipeline", text: "45% YoY increase in qualified lead generation", source: "Q3 BR" },
-  { type: "commitment", category: "Expansion", text: "Advanced Analytics premium — 3-4 week implementation", source: "Presales/Renewal email" },
-  { type: "commitment", category: "Expansion", text: "Detailed implementation plan to be delivered post-signature", source: "Renewal commitment" },
-  { type: "commitment", category: "Growth", text: "15–20% capacity uplift requested by customer", source: "Michael Chen email" },
-  { type: "commitment", category: "Seats", text: "Seat growth 812 → 935 projected", source: "Renewal modeling" },
-  { type: "commitment", category: "Multi-BU", text: "Expand platform usage to additional business units", source: "Q3 BR" },
-  { type: "concern", category: "Risk", text: "Implementation complexity / resource requirements flagged", source: "Michael Chen thread" },
-  { type: "concern", category: "Governance", text: "Governance + compliance planning needed before scaled rollout", source: "Recent email thread" },
+// Toggle: false for net-new accounts with no prior CSM history.
+// When false, the Quarterback Map panel hides and Brief priorities skip
+// the "Continuing Sally's work" annotations.
+const HAS_PRIOR_CSM = true;
+const PRIOR_CSM_NAME = "Sally McField";
+
+// Previous CSM's active quarterbacking — items she had in-flight on handoff day.
+// Pulled from her authored Timeline notes, Cockpit CTAs she owned, and
+// Success Plan objectives where she was the owner.
+const QUARTERBACK_ITEMS = [
+  {
+    title: "Advanced Analytics implementation plan",
+    status: "in-flight",
+    statusLabel: "In-flight · awaiting customer kickoff date",
+    lastTouch: "May 11, 2026",
+    sourceType: "Cockpit CTA + Timeline note",
+    sourceDetail: "CTA: Advanced Analytics scoping · Timeline: \"Renewal commitment follow-up\" (May 6)",
+    coordinating: ["Solutions Architecture (Matt Shea)", "Product (Analytics PM)"],
+    note: "Committed in the renewal email thread. Sally has scoped resourcing but is waiting on customer to confirm kickoff window."
+  },
+  {
+    title: "Headcount projections from Michael Chen",
+    status: "blocked",
+    statusLabel: "Blocked · waiting on customer",
+    lastTouch: "Apr 28, 2026",
+    sourceType: "Email thread",
+    sourceDetail: "Reply chain with Michael Chen re: 15-20% capacity uplift",
+    coordinating: ["Account Executive", "Pricing/Deal Desk"],
+    note: "Last nudge was Apr 28. Michael acknowledged but hasn't sent numbers. Blocks final renewal scenario modeling."
+  },
+  {
+    title: "Adoption assurance plan execution",
+    status: "in-flight",
+    statusLabel: "In-flight · plan exists, not yet executed",
+    lastTouch: "May 3, 2026",
+    sourceType: "Success Plan objective",
+    sourceDetail: "2028 Renewal Success Plan · Objective: Adoption recovery",
+    coordinating: ["PX team", "Customer's Emma Rodriguez (Adoption Lead)"],
+    note: "Sally drafted the plan but hasn't kicked off the work. This is the lever for the 20% usage drop."
+  },
+  {
+    title: "Sponsor check-in with Sarah Johnson",
+    status: "scheduled",
+    statusLabel: "Scheduled · next exec touch is overdue",
+    lastTouch: "Apr 22, 2026",
+    sourceType: "Timeline + Calendar",
+    sourceDetail: "Last exec sync Apr 22 · No follow-up scheduled in next 30 days",
+    coordinating: ["Solutions Consulting (Matt Shea)"],
+    note: "Sally noted in her Apr 22 recap that Sarah wanted a 60-day cadence. Next one is overdue by ~3 weeks."
+  },
+  {
+    title: "Support ticket backlog escalation",
+    status: "in-flight",
+    statusLabel: "In-flight · monitoring, not escalated",
+    lastTouch: "Apr 15, 2026",
+    sourceType: "Timeline note",
+    sourceDetail: "\"Support check-in\" timeline entry on Apr 15",
+    coordinating: ["Support team lead", "TAM (if assigned)"],
+    note: "Sally checked in once but didn't escalate. 10+ tickets still open. Likely contributing to PX usage drop."
+  },
+  {
+    title: "G2 review collection from Sarah Johnson",
+    status: "deferred",
+    statusLabel: "Deferred · soft commitment, not yet asked",
+    lastTouch: "Mar 2026 (Q3 BR)",
+    sourceType: "Staircase conversation",
+    sourceDetail: "Sarah offered during Q3 Business Review per Staircase summary",
+    coordinating: ["Marketing/Advocacy"],
+    note: "Customer-initiated offer. Sally never formally requested. Easy week-1 win."
+  }
 ];
+
+// Provenance for each Week 1 Priority in the Brief.
+// Maps to QUARTERBACK_ITEMS by title, or flags as net-new agent recommendation.
+const BRIEF_PROVENANCE = [
+  { handoff: true, fromItem: "Advanced Analytics implementation plan" },
+  { handoff: true, fromItem: "Headcount projections from Michael Chen" },
+  { handoff: true, fromItem: "Sponsor check-in with Sarah Johnson" }
+];
+
+const COMMITMENTS = [
+  { type: "value", category: "ROI", text: "34% ROI improvement delivered", source: "Q3 Business Review", date: "Mar 12, 2026", citation: "Timeline: Q3 BR deck, slide 4" },
+  { type: "value", category: "Productivity", text: "25% productivity gain achieved", source: "Q3 BR", date: "Mar 12, 2026", citation: "Timeline: Q3 BR deck, slide 5" },
+  { type: "value", category: "Automation Pilot", text: "42% campaign-efficiency improvement", source: "Pilot results", date: "Feb 18, 2026", citation: "Staircase: Automation pilot readout call" },
+  { type: "value", category: "Engagement", text: "28% higher engagement on automated journeys", source: "Pilot results", date: "Feb 18, 2026", citation: "Staircase: Automation pilot readout call" },
+  { type: "value", category: "Time Saved", text: "15 hours/week saved per campaign manager", source: "Q3 BR", date: "Mar 12, 2026", citation: "Timeline: Q3 BR deck, slide 6" },
+  { type: "value", category: "Deliverability", text: "91% deliverability to financial domains", source: "Q3 BR", date: "Mar 12, 2026", citation: "Timeline: Q3 BR deck, slide 7" },
+  { type: "value", category: "Manual Work", text: "55% reduction in manual campaign management time", source: "Q3 BR", date: "Mar 12, 2026", citation: "Timeline: Q3 BR deck, slide 6" },
+  { type: "value", category: "Speed", text: "40% faster campaign development", source: "Q3 BR", date: "Mar 12, 2026", citation: "Timeline: Q3 BR deck, slide 8" },
+  { type: "value", category: "Pipeline", text: "45% YoY increase in qualified lead generation", source: "Q3 BR", date: "Mar 12, 2026", citation: "Timeline: Q3 BR deck, slide 9" },
+  { type: "commitment", category: "Expansion", text: "Advanced Analytics premium — 3-4 week implementation", source: "Renewal email", date: "Apr 24, 2026", citation: "Staircase: Renewal commitment email thread", overdue: false },
+  { type: "commitment", category: "Expansion", text: "Detailed implementation plan to be delivered post-signature", source: "Renewal commitment", date: "May 2, 2026", citation: "Staircase: Post-DocuSign reply thread", overdue: true },
+  { type: "commitment", category: "Growth", text: "15–20% capacity uplift requested by customer", source: "Michael Chen email", date: "Apr 28, 2026", citation: "Staircase: Capacity planning email thread", overdue: true },
+  { type: "commitment", category: "Seats", text: "Seat growth 812 → 935 projected", source: "Renewal modeling", date: "Apr 24, 2026", citation: "Gainsight: Renewal opportunity record", overdue: false },
+  { type: "commitment", category: "Multi-BU", text: "Expand platform usage to additional business units", source: "Q3 BR", date: "Mar 12, 2026", citation: "Timeline: Q3 BR exec discussion notes", overdue: false },
+  { type: "concern", category: "Risk", text: "Implementation complexity / resource requirements flagged", source: "Michael Chen thread", date: "Apr 28, 2026", citation: "Staircase: Capacity planning email thread" },
+  { type: "concern", category: "Governance", text: "Governance + compliance planning needed before scaled rollout", source: "Recent email thread", date: "May 5, 2026", citation: "Staircase: Pre-rollout governance discussion" },
+];
+
+// Anchor dates for the Commitments panel header
+const CUSTOMER_DATES = {
+  originalContract: "Dec 27, 2024",
+  goLive: "Nov 15, 2023",
+  currentTermStart: "Dec 27, 2024",
+  renewalSigned: "Apr 24, 2026",
+  newTermEnd: "Jun 18, 2028"
+};
 
 const STAKEHOLDERS = [
   { name: "Sarah Johnson", role: "Executive Sponsor", signal: "champion", depth: "High", lastTouch: "Apr 2026", note: "Confirmed renewal + expansion intent. Said confidence had been restored." },
@@ -326,19 +415,47 @@ const HandoffBrief = () => (
       <strong style={{ color: 'var(--red)' }}>But</strong> the account is carrying <strong>17 open risk CTAs</strong>, AI Insights is Red at 45 and declining, usage has dropped 20%, and there are 10+ open support tickets. The strategic relationship is recovering — operational health is lagging behind it.
     </p>
     <div style={{ background: 'rgba(0,0,0,0.25)', borderRadius: 12, padding: 16, borderLeft: '3px solid var(--accent)' }}>
-      <div style={{ fontSize: 11, color: 'var(--accent-2)', textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 10, fontWeight: 600 }}>Week 1 Priorities</div>
-      <div style={{ display: 'grid', gap: 10 }}>
-        <div style={{ display: 'flex', gap: 10 }}>
-          <span style={{ color: 'var(--accent)', fontWeight: 700, minWidth: 18 }}>1.</span>
-          <span>Deliver the <strong>Advanced Analytics implementation plan</strong> — committed in presales, 3-4 week timeline, blocks expansion.</span>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10, flexWrap: 'wrap', gap: 8 }}>
+        <div style={{ fontSize: 11, color: 'var(--accent-2)', textTransform: 'uppercase', letterSpacing: 1.5, fontWeight: 600 }}>Week 1 Priorities</div>
+        {HAS_PRIOR_CSM && (
+          <div style={{ fontSize: 10, color: 'var(--text-faint)' }}>
+            {BRIEF_PROVENANCE.filter(p => p.handoff).length} of {BRIEF_PROVENANCE.length} continuing {PRIOR_CSM_NAME.split(' ')[0]}'s work
+          </div>
+        )}
+      </div>
+      <div style={{ display: 'grid', gap: 12 }}>
+        <div>
+          <div style={{ display: 'flex', gap: 10, marginBottom: 4 }}>
+            <span style={{ color: 'var(--accent)', fontWeight: 700, minWidth: 18 }}>1.</span>
+            <span>Deliver the <strong>Advanced Analytics implementation plan</strong> — committed in presales, 3-4 week timeline, blocks expansion.</span>
+          </div>
+          {HAS_PRIOR_CSM && BRIEF_PROVENANCE[0].handoff && (
+            <div style={{ marginLeft: 28, fontSize: 11, color: 'var(--accent-2)', fontStyle: 'italic' }}>
+              ↳ Continuing {PRIOR_CSM_NAME.split(' ')[0]}'s work · in-flight, awaiting customer kickoff date
+            </div>
+          )}
         </div>
-        <div style={{ display: 'flex', gap: 10 }}>
-          <span style={{ color: 'var(--accent)', fontWeight: 700, minWidth: 18 }}>2.</span>
-          <span>Chase <strong>Michael Chen</strong> for headcount projections — they unblock final renewal scenario modeling.</span>
+        <div>
+          <div style={{ display: 'flex', gap: 10, marginBottom: 4 }}>
+            <span style={{ color: 'var(--accent)', fontWeight: 700, minWidth: 18 }}>2.</span>
+            <span>Chase <strong>Michael Chen</strong> for headcount projections — they unblock final renewal scenario modeling.</span>
+          </div>
+          {HAS_PRIOR_CSM && BRIEF_PROVENANCE[1].handoff && (
+            <div style={{ marginLeft: 28, fontSize: 11, color: 'var(--red)', fontStyle: 'italic' }}>
+              ↳ Continuing {PRIOR_CSM_NAME.split(' ')[0]}'s work · blocked since Apr 28, customer unresponsive
+            </div>
+          )}
         </div>
-        <div style={{ display: 'flex', gap: 10 }}>
-          <span style={{ color: 'var(--accent)', fontWeight: 700, minWidth: 18 }}>3.</span>
-          <span>Book sponsor check-in with <strong>Sarah Johnson</strong> to reconfirm sponsorship before the renewal window closes.</span>
+        <div>
+          <div style={{ display: 'flex', gap: 10, marginBottom: 4 }}>
+            <span style={{ color: 'var(--accent)', fontWeight: 700, minWidth: 18 }}>3.</span>
+            <span>Book sponsor check-in with <strong>Sarah Johnson</strong> to reconfirm sponsorship before the renewal window closes.</span>
+          </div>
+          {HAS_PRIOR_CSM && BRIEF_PROVENANCE[2].handoff && (
+            <div style={{ marginLeft: 28, fontSize: 11, color: 'var(--accent-2)', fontStyle: 'italic' }}>
+              ↳ Continuing {PRIOR_CSM_NAME.split(' ')[0]}'s work · last sync Apr 22, 60-day cadence overdue by ~3 weeks
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -359,6 +476,90 @@ const TopStats = () => (
   </div>
 );
 
+// ============================================================
+// Quarterback Map — what the previous CSM was actively driving
+// ============================================================
+const STATUS_STYLES = {
+  'in-flight':  { c: 'var(--accent-2)', bg: 'rgba(6,182,212,0.12)', label: 'In-flight' },
+  'blocked':    { c: 'var(--red)',      bg: 'rgba(247,114,113,0.12)', label: 'Blocked' },
+  'scheduled':  { c: 'var(--accent)',   bg: 'rgba(139,92,246,0.12)', label: 'Scheduled' },
+  'deferred':   { c: 'var(--yellow)',   bg: 'rgba(252,198,66,0.12)', label: 'Deferred' },
+};
+
+const QuarterbackMap = () => {
+  if (!HAS_PRIOR_CSM) return null;
+  const handoverCount = QUARTERBACK_ITEMS.length;
+  const blockedCount = QUARTERBACK_ITEMS.filter(i => i.status === 'blocked').length;
+  const inFlightCount = QUARTERBACK_ITEMS.filter(i => i.status === 'in-flight').length;
+
+  return (
+    <Card style={{ marginBottom: 24 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16, flexWrap: 'wrap', gap: 12 }}>
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4, flexWrap: 'wrap' }}>
+            <h2 style={{ fontSize: 16, fontWeight: 600 }}>What {PRIOR_CSM_NAME} Was Quarterbacking</h2>
+            <SourceBadges sources={['Cockpit', 'Timeline', 'Gainsight']} />
+          </div>
+          <div style={{ fontSize: 12, color: 'var(--text-dim)' }}>
+            Active work in flight on handoff day · {handoverCount} items · {inFlightCount} in-flight, {blockedCount} blocked
+          </div>
+        </div>
+        <div style={{ display: 'flex', gap: 6 }}>
+          <Pill color="var(--accent-2)" bg="rgba(6,182,212,0.12)">{inFlightCount} in-flight</Pill>
+          {blockedCount > 0 && <Pill color="var(--red)" bg="rgba(247,114,113,0.12)">{blockedCount} blocked</Pill>}
+        </div>
+      </div>
+
+      <div style={{ display: 'grid', gap: 10 }}>
+        {QUARTERBACK_ITEMS.map((item, i) => {
+          const s = STATUS_STYLES[item.status];
+          return (
+            <div key={i} style={{
+              background: 'rgba(0,0,0,0.2)',
+              border: '1px solid var(--border)',
+              borderLeft: '3px solid ' + s.c,
+              borderRadius: 10, padding: 14
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8, gap: 12, flexWrap: 'wrap' }}>
+                <div style={{ flex: 1, minWidth: 200 }}>
+                  <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 4 }}>{item.title}</div>
+                  <div style={{ fontSize: 12, color: s.c, fontWeight: 500 }}>{item.statusLabel}</div>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: 10, color: 'var(--text-faint)', textTransform: 'uppercase', letterSpacing: 1 }}>Last touch</div>
+                  <div style={{ fontSize: 12, fontWeight: 500, color: 'var(--text-dim)' }}>{item.lastTouch}</div>
+                </div>
+              </div>
+
+              <div style={{ fontSize: 12, color: 'var(--text-dim)', lineHeight: 1.5, marginBottom: 10 }}>{item.note}</div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 10, fontSize: 11 }}>
+                <div>
+                  <div style={{ fontSize: 9, color: 'var(--text-faint)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 3 }}>Source</div>
+                  <div style={{ color: 'var(--text-dim)', marginBottom: 2 }}>{item.sourceType}</div>
+                  <div style={{ color: 'var(--text-faint)', fontStyle: 'italic', fontSize: 10 }}>↳ {item.sourceDetail}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: 9, color: 'var(--text-faint)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 3 }}>Coordinating with</div>
+                  <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+                    {item.coordinating.map((t, ti) => (
+                      <span key={ti} style={{
+                        fontSize: 10, color: 'var(--text-dim)',
+                        background: 'rgba(255,255,255,0.04)',
+                        border: '1px solid var(--border)', borderRadius: 4,
+                        padding: '2px 6px'
+                      }}>{t}</span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </Card>
+  );
+};
 // ============================================================
 // Signal Reconciliation — pure agent synthesis
 // ============================================================
@@ -482,6 +683,34 @@ const Commitments = () => {
           ))}
         </div>
       </div>
+
+      {/* Customer-dates anchor strip */}
+      <div style={{
+        display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 10, marginBottom: 16,
+        padding: 12, background: 'rgba(0,0,0,0.2)', borderRadius: 10, border: '1px solid var(--border)'
+      }}>
+        <div>
+          <div style={{ fontSize: 10, color: 'var(--text-faint)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 3 }}>Customer Since</div>
+          <div style={{ fontSize: 13, fontWeight: 600 }}>{CUSTOMER_DATES.goLive}</div>
+          <div style={{ fontSize: 10, color: 'var(--text-faint)', marginTop: 2 }}>Go-live</div>
+        </div>
+        <div>
+          <div style={{ fontSize: 10, color: 'var(--text-faint)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 3 }}>Current Term Started</div>
+          <div style={{ fontSize: 13, fontWeight: 600 }}>{CUSTOMER_DATES.currentTermStart}</div>
+          <div style={{ fontSize: 10, color: 'var(--text-faint)', marginTop: 2 }}>Original contract</div>
+        </div>
+        <div>
+          <div style={{ fontSize: 10, color: 'var(--text-faint)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 3 }}>Renewal Signed</div>
+          <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--green)' }}>{CUSTOMER_DATES.renewalSigned}</div>
+          <div style={{ fontSize: 10, color: 'var(--text-faint)', marginTop: 2 }}>2-year DocuSign</div>
+        </div>
+        <div>
+          <div style={{ fontSize: 10, color: 'var(--text-faint)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 3 }}>New Term Through</div>
+          <div style={{ fontSize: 13, fontWeight: 600 }}>{CUSTOMER_DATES.newTermEnd}</div>
+          <div style={{ fontSize: 10, color: 'var(--text-faint)', marginTop: 2 }}>Next renewal</div>
+        </div>
+      </div>
+
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 10 }}>
         {filtered.map((c, i) => (
           <div key={i} style={{
@@ -490,9 +719,26 @@ const Commitments = () => {
             borderRadius: 10, padding: 12,
             borderLeft: '3px solid ' + colors[c.type].c
           }}>
-            <div style={{ fontSize: 10, color: colors[c.type].c, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 4, fontWeight: 600 }}>{c.category}</div>
-            <div style={{ fontSize: 13, color: 'var(--text)', marginBottom: 6, lineHeight: 1.45 }}>{c.text}</div>
-            <div style={{ fontSize: 10, color: 'var(--text-faint)' }}>Source: {c.source}</div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4, gap: 6 }}>
+              <div style={{ fontSize: 10, color: colors[c.type].c, textTransform: 'uppercase', letterSpacing: 1, fontWeight: 600 }}>{c.category}</div>
+              {c.overdue && (
+                <span style={{
+                  fontSize: 9, color: 'var(--red)', background: 'rgba(247,114,113,0.12)',
+                  border: '1px solid rgba(247,114,113,0.3)', borderRadius: 4,
+                  padding: '1px 6px', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase'
+                }}>⚠ Overdue</span>
+              )}
+            </div>
+            <div style={{ fontSize: 13, color: 'var(--text)', marginBottom: 8, lineHeight: 1.45 }}>{c.text}</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+              <span style={{
+                fontSize: 10, color: 'var(--text)', background: 'rgba(255,255,255,0.06)',
+                border: '1px solid var(--border)', borderRadius: 4, padding: '1px 6px',
+                fontWeight: 600, fontFamily: 'ui-monospace, "SF Mono", Menlo, monospace'
+              }}>{c.date}</span>
+              <span style={{ fontSize: 10, color: 'var(--text-faint)' }}>· {c.source}</span>
+            </div>
+            <div style={{ fontSize: 10, color: 'var(--text-faint)', fontStyle: 'italic', lineHeight: 1.4 }}>↳ {c.citation}</div>
           </div>
         ))}
       </div>
@@ -727,6 +973,7 @@ const Footer = () => (
 // ============================================================
 const NAV_SECTIONS = [
   { id: 'brief', label: 'Brief' },
+  ...(HAS_PRIOR_CSM ? [{ id: 'quarterback', label: `${PRIOR_CSM_NAME.split(' ')[0]}'s Work` }] : []),
   { id: 'reconciliation', label: 'Signal Reconciliation' },
   { id: 'commitments', label: 'Commitments' },
   { id: 'stakeholders', label: 'Stakeholders' },
@@ -789,6 +1036,7 @@ const App = () => (
       <div style={{ padding: '24px 40px' }}>
         <div id="brief"><HandoffBrief /></div>
         <TopStats />
+        {HAS_PRIOR_CSM && <div id="quarterback"><QuarterbackMap /></div>}
         <div id="reconciliation"><SignalReconciliation /></div>
         <div id="commitments"><Commitments /></div>
         <div id="stakeholders"><Stakeholders /></div>
