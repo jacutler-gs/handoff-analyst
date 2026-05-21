@@ -2,36 +2,121 @@
   Handoff Analyst — Pulse Gainsight SC Demo
   Single-file, GitHub-Pages-ready. Snapshotted data from CSMCP-Demo + Staircase.
   Account: Abbett (parent) — $275K ARR Enterprise, Renewal in ~30 days.
+  Horizon Design System v3.1 — light mode default, dark mode toggle.
 -->
 <style>
+  /* ==============================================================
+     HORIZON LIGHT THEME (default)
+     ============================================================== */
   :root {
+    /* Surfaces */
+    --bg-0: #f5f7f9;           /* page background — Rich Gray 10 */
+    --bg-1: #ffffff;           /* card surface */
+    --bg-2: #fbfbfc;           /* alt surface */
+    --bg-3: #f5f7f9;           /* nested panel */
+    --bg-hover: rgba(117,150,183,0.10);
+
+    /* Borders */
+    --border: #e3eaf1;
+    --border-strong: #d5d9de;
+
+    /* Text */
+    --text: #19232f;           /* Rich Gray 90 — titles/emphasis */
+    --text-body: #3c4a57;      /* Rich Gray 70 — body */
+    --text-dim: #5f6c7a;       /* Rich Gray 60 */
+    --text-faint: #7596b7;     /* Rich Gray 50 — microcopy */
+
+    /* Brand / accent */
+    --accent: #0369e9;         /* Royal Blue 70 — primary action */
+    --accent-2: #1e9cdf;       /* Pacific Blue 50 */
+    --accent-soft: #e6f0fd;    /* Royal Blue 10 */
+    --accent-2-soft: #d3ecfa;  /* Pacific Blue 10 */
+
+    /* Semantic */
+    --green: #119460;          /* Fresh Green 60 — success */
+    --green-soft: #e6f5ee;
+    --yellow: #da7309;         /* Honey Yellow 80 — warning */
+    --yellow-soft: #fff8e0;
+    --red: #dc3626;            /* Tart Red 70 — danger */
+    --red-soft: #fdf2f1;
+    --blue-soft: #d3ecfa;
+
+    /* Shadows — Horizon scale */
+    --shadow-100: 0 0 1px 0 rgba(25,35,47,0.12), 0 1px 3px 0 rgba(25,35,47,0.06);
+    --shadow-200: 0 0 1px 0 rgba(52,56,58,0.20), 0 6px 12px 0 rgba(25,35,47,0.06);
+    --shadow-300: 0 0 1px 0 rgba(52,56,58,0.20), 0 8px 16px 0 rgba(52,56,58,0.08);
+
+    /* Source badge colors — light mode */
+    --src-gainsight:   #0369e9;
+    --src-staircase:   #1982ba;
+    --src-px:          #c43578;
+    --src-community:   #d95b18;
+    --src-skilljar:    #da7309;
+    --src-scorecard:   #119460;
+  }
+
+  /* ==============================================================
+     DARK THEME (toggle)
+     ============================================================== */
+  [data-theme="dark"] {
     --bg-0: #0a0b14;
     --bg-1: #11131f;
     --bg-2: #161929;
     --bg-3: #1d2235;
+    --bg-hover: rgba(255,255,255,0.06);
+
     --border: rgba(255,255,255,0.08);
     --border-strong: rgba(255,255,255,0.14);
+
     --text: #e8eaf2;
+    --text-body: #e8eaf2;
     --text-dim: #9da3b7;
     --text-faint: #6b7290;
+
     --accent: #8b5cf6;
     --accent-2: #06b6d4;
+    --accent-soft: rgba(139,92,246,0.12);
+    --accent-2-soft: rgba(6,182,212,0.10);
+
     --green: #3fce96;
+    --green-soft: rgba(63,206,150,0.12);
     --yellow: #fcc642;
+    --yellow-soft: rgba(252,198,66,0.12);
     --red: #f77271;
-    --gradient: linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%);
-    --gradient-soft: linear-gradient(135deg, rgba(139,92,246,0.15) 0%, rgba(6,182,212,0.10) 100%);
-    --shadow-glow: 0 0 40px rgba(139,92,246,0.15);
+    --red-soft: rgba(247,114,113,0.12);
+    --blue-soft: rgba(6,182,212,0.12);
+
+    --shadow-100: 0 0 40px rgba(139,92,246,0.15);
+    --shadow-200: 0 0 40px rgba(139,92,246,0.15);
+    --shadow-300: 0 4px 12px rgba(0,0,0,0.4);
+
+    --src-gainsight:   #a78bfa;
+    --src-staircase:   #06b6d4;
+    --src-px:          #f472b6;
+    --src-community:   #fb923c;
+    --src-skilljar:    #facc15;
+    --src-scorecard:   #34d399;
   }
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body, html { background: var(--bg-0); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  html, body {
+    background: var(--bg-0);
+    color: var(--text-body);
+    font-family: 'Noto Sans', -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
   #root { min-height: 100vh; position: relative; z-index: 1; }
-  body::before {
+
+  /* Dark mode background glow — only in dark theme */
+  [data-theme="dark"] body::before {
     content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
     background:
       radial-gradient(ellipse 80% 50% at 50% -10%, rgba(139,92,246,0.18), transparent 60%),
       radial-gradient(ellipse 60% 40% at 90% 110%, rgba(6,182,212,0.10), transparent 60%);
   }
+
   button { font-family: inherit; }
 </style>
 
@@ -43,9 +128,7 @@
 <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/recharts/2.10.3/Recharts.js"></script>
 
 <script type="text/babel" data-presets="react">
-const { useState } = React;
-
-// Recharts may not be loaded — fall back gracefully
+const { useState, useEffect } = React;
 const hasRecharts = typeof Recharts !== 'undefined';
 const LineChart = hasRecharts ? Recharts.LineChart : null;
 const Line = hasRecharts ? Recharts.Line : null;
@@ -55,7 +138,7 @@ const Tooltip = hasRecharts ? Recharts.Tooltip : null;
 const ResponsiveContainer = hasRecharts ? Recharts.ResponsiveContainer : null;
 
 // ============================================================
-// SNAPSHOTTED DATA — pulled from Gainsight CSMCP-Demo + Staircase AI
+// SNAPSHOTTED DATA — Gainsight CSMCP-Demo + Staircase AI
 // ============================================================
 const ACCOUNT = {
   name: "Abbett",
@@ -101,15 +184,9 @@ const HEALTH = {
 
 const STAIRCASE = { sentiment: 100 };
 
-// Toggle: false for net-new accounts with no prior CSM history.
-// When false, the Quarterback Map panel hides and Brief priorities skip
-// the "Continuing Sally's work" annotations.
 const HAS_PRIOR_CSM = true;
 const PRIOR_CSM_NAME = "Sally McField";
 
-// Previous CSM's active quarterbacking — items she had in-flight on handoff day.
-// Pulled from her authored Timeline notes, Cockpit CTAs she owned, and
-// Success Plan objectives where she was the owner.
 const QUARTERBACK_ITEMS = [
   {
     title: "Advanced Analytics implementation plan",
@@ -173,8 +250,6 @@ const QUARTERBACK_ITEMS = [
   }
 ];
 
-// Provenance for each Week 1 Priority in the Brief.
-// Maps to QUARTERBACK_ITEMS by title, or flags as net-new agent recommendation.
 const BRIEF_PROVENANCE = [
   { handoff: true, fromItem: "Advanced Analytics implementation plan" },
   { handoff: true, fromItem: "Headcount projections from Michael Chen" },
@@ -200,7 +275,6 @@ const COMMITMENTS = [
   { type: "concern", category: "Governance", text: "Governance + compliance planning needed before scaled rollout", source: "Recent email thread", date: "May 5, 2026", citation: "Staircase: Pre-rollout governance discussion" },
 ];
 
-// Anchor dates for the Commitments panel header
 const CUSTOMER_DATES = {
   originalContract: "Dec 27, 2024",
   goLive: "Nov 15, 2023",
@@ -250,6 +324,15 @@ const SUCCESS_PLANS = [
   { name: "Renewal Plan", owner: "Matt Middleton", objectives: 5, note: "Long-form renewal motion: business case, ROI, exec buyer, customer references." },
 ];
 
+const SIGNALS_TABLE = [
+  { system: 'Gainsight', source: 'Gainsight', score: '74', label: 'Green', tone: 'green', read: 'Rollup says the account is healthy.' },
+  { system: 'Scorecard · AI Insights group', source: 'Scorecard', score: '45', label: 'Red, declining', tone: 'red', read: 'Internal AI is flagging deterioration.' },
+  { system: 'Staircase AI', source: 'Staircase', score: '100', label: 'Strongly positive', tone: 'green', read: 'Conversation sentiment is at the top of the range.' },
+  { system: 'PX', source: 'PX', score: '−20%', label: 'Usage drop', tone: 'red', read: 'DAU collapsed to 35% of licensed seats.' },
+  { system: 'Support', source: 'Gainsight', score: '10+', label: 'Open tickets', tone: 'yellow', read: 'Backlog has not cleared since April 15.' },
+  { system: 'Cockpit', source: 'Cockpit', score: '17', label: 'Open risk CTAs', tone: 'red', read: 'Heaviest risk load in the renewal cohort.' },
+];
+
 const ANALYST_QA = [
   {
     q: "What was committed to the customer during the presales motion?",
@@ -286,17 +369,17 @@ const ANALYST_QA = [
 ];
 
 // ============================================================
-// Source badge styles
+// Source badge styles — pull from CSS vars
 // ============================================================
-const SOURCE_STYLES = {
-  Gainsight: { c: '#a78bfa', bg: 'rgba(167,139,250,0.10)' },
-  Staircase: { c: '#06b6d4', bg: 'rgba(6,182,212,0.10)' },
-  PX:        { c: '#f472b6', bg: 'rgba(244,114,182,0.10)' },
-  Community: { c: '#fb923c', bg: 'rgba(251,146,60,0.10)' },
-  Skilljar:  { c: '#facc15', bg: 'rgba(250,204,21,0.10)' },
-  Scorecard: { c: '#34d399', bg: 'rgba(52,211,153,0.10)' },
-  Cockpit:   { c: '#a78bfa', bg: 'rgba(167,139,250,0.10)' },
-  Timeline:  { c: '#a78bfa', bg: 'rgba(167,139,250,0.10)' },
+const SOURCE_VAR = {
+  Gainsight: 'var(--src-gainsight)',
+  Staircase: 'var(--src-staircase)',
+  PX:        'var(--src-px)',
+  Community: 'var(--src-community)',
+  Skilljar:  'var(--src-skilljar)',
+  Scorecard: 'var(--src-scorecard)',
+  Cockpit:   'var(--src-gainsight)',
+  Timeline:  'var(--src-gainsight)',
 };
 
 // ============================================================
@@ -304,12 +387,11 @@ const SOURCE_STYLES = {
 // ============================================================
 const Card = (props) => {
   const style = {
-    background: 'linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%)',
+    background: 'var(--bg-1)',
     border: '1px solid var(--border)',
-    borderRadius: 16,
+    borderRadius: 12,
     padding: 24,
-    backdropFilter: 'blur(10px)',
-    boxShadow: props.glow ? 'var(--shadow-glow)' : 'none',
+    boxShadow: props.glow ? 'var(--shadow-200)' : 'var(--shadow-100)',
     ...(props.style || {})
   };
   return <div style={style}>{props.children}</div>;
@@ -317,29 +399,30 @@ const Card = (props) => {
 
 const Pill = (props) => {
   const color = props.color || 'var(--text-dim)';
-  const bg = props.bg || 'rgba(255,255,255,0.06)';
-  const borderColor = color === 'var(--text-dim)' ? 'var(--border)' : color + '33';
+  const bg = props.bg || 'var(--bg-3)';
   return (
     <span style={{
       display: 'inline-flex', alignItems: 'center', gap: 4,
-      padding: '3px 10px', borderRadius: 999, fontSize: 11, fontWeight: 500,
-      color: color, background: bg, border: '1px solid ' + borderColor,
+      padding: '3px 10px', borderRadius: 6, fontSize: 11, fontWeight: 600,
+      color: color, background: bg,
+      border: '1px solid ' + (color === 'var(--text-dim)' ? 'var(--border)' : 'transparent'),
       letterSpacing: 0.3, textTransform: 'uppercase'
     }}>{props.children}</span>
   );
 };
 
 const SourceBadge = (props) => {
-  const s = SOURCE_STYLES[props.source] || SOURCE_STYLES.Gainsight;
+  const c = SOURCE_VAR[props.source] || SOURCE_VAR.Gainsight;
   return (
     <span style={{
       display: 'inline-flex', alignItems: 'center', gap: 5,
-      padding: '3px 8px', borderRadius: 6, fontSize: 10, fontWeight: 600,
-      color: s.c, background: s.bg, border: '1px solid ' + s.c + '33',
+      padding: '2px 8px', borderRadius: 6, fontSize: 10, fontWeight: 600,
+      color: c, background: 'var(--bg-3)',
+      border: '1px solid var(--border)',
       letterSpacing: 0.5, textTransform: 'uppercase',
       fontFamily: 'ui-monospace, "SF Mono", Menlo, monospace'
     }}>
-      <span style={{ width: 5, height: 5, borderRadius: '50%', background: s.c, boxShadow: '0 0 6px ' + s.c }} />
+      <span style={{ width: 5, height: 5, borderRadius: '50%', background: c }} />
       {props.source}
     </span>
   );
@@ -353,617 +436,70 @@ const SourceBadges = (props) => (
 
 const Stat = (props) => (
   <div>
-    <div style={{ fontSize: 11, color: 'var(--text-faint)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 6 }}>{props.label}</div>
-    <div style={{ fontSize: 28, fontWeight: 700, color: props.accent || 'var(--text)', lineHeight: 1, marginBottom: 4 }}>{props.value}</div>
+    <div style={{ fontSize: 11, color: 'var(--text-faint)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 6, fontWeight: 600 }}>{props.label}</div>
+    <div style={{ fontSize: 28, fontWeight: 600, color: props.accent || 'var(--text)', lineHeight: 1, marginBottom: 4, letterSpacing: '-0.01em' }}>{props.value}</div>
     {props.sub && <div style={{ fontSize: 12, color: 'var(--text-dim)' }}>{props.sub}</div>}
   </div>
 );
 
 // ============================================================
+// Theme toggle
+// ============================================================
+const ThemeToggle = ({ theme, setTheme }) => {
+  const isDark = theme === 'dark';
+  return (
+    <button
+      onClick={() => setTheme(isDark ? 'light' : 'dark')}
+      style={{
+        display: 'inline-flex', alignItems: 'center', gap: 6,
+        padding: '6px 12px', borderRadius: 8, fontSize: 12, fontWeight: 500,
+        border: '1px solid var(--border)',
+        background: 'var(--bg-1)',
+        color: 'var(--text-body)',
+        cursor: 'pointer',
+        transition: 'all 0.15s'
+      }}
+      title={isDark ? 'Switch to Horizon (light) mode' : 'Switch to dark mode'}
+    >
+      <span style={{ fontSize: 14 }}>{isDark ? '☀' : '◐'}</span>
+      <span>{isDark ? 'Horizon' : 'Dark'}</span>
+    </button>
+  );
+};
+
+// ============================================================
 // Header
 // ============================================================
-const Header = () => (
-  <div style={{ padding: '32px 40px 24px', borderBottom: '1px solid var(--border)' }}>
+const Header = ({ theme, setTheme }) => (
+  <div style={{ padding: '32px 40px 24px', borderBottom: '1px solid var(--border)', background: 'var(--bg-1)' }}>
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
       <div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
           <div style={{
-            width: 36, height: 36, borderRadius: 10, background: 'var(--gradient)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: 18
+            width: 36, height: 36, borderRadius: 8, background: 'var(--accent)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 18, color: '#fff'
           }}>H</div>
           <div>
-            <div style={{ fontSize: 11, color: 'var(--text-faint)', textTransform: 'uppercase', letterSpacing: 2 }}>Handoff Analyst · Headless Gainsight</div>
-            <h1 style={{ fontSize: 24, fontWeight: 700, letterSpacing: -0.5 }}>{ACCOUNT.name}</h1>
+            <div style={{ fontSize: 11, color: 'var(--text-faint)', textTransform: 'uppercase', letterSpacing: 1.5, fontWeight: 600 }}>Handoff Analyst · Headless Gainsight</div>
+            <h1 style={{ fontSize: 24, fontWeight: 600, letterSpacing: '-0.01em', color: 'var(--text)' }}>{ACCOUNT.name}</h1>
           </div>
         </div>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           <Pill>{ACCOUNT.industry}</Pill>
           <Pill>{ACCOUNT.segment}</Pill>
           <Pill>{ACCOUNT.region}</Pill>
-          <Pill color="var(--green)" bg="rgba(63,206,150,0.12)">● {ACCOUNT.status}</Pill>
-          <Pill color="var(--yellow)" bg="rgba(252,198,66,0.12)">Stage: {ACCOUNT.stage}</Pill>
+          <Pill color="var(--green)" bg="var(--green-soft)">● {ACCOUNT.status}</Pill>
+          <Pill color="var(--yellow)" bg="var(--yellow-soft)">Stage: {ACCOUNT.stage}</Pill>
         </div>
       </div>
-      <div style={{ textAlign: 'right' }}>
-        <div style={{ fontSize: 11, color: 'var(--text-faint)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 4 }}>Renewal in</div>
-        <div style={{ fontSize: 36, fontWeight: 800, background: 'var(--gradient)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', lineHeight: 1 }}>{ACCOUNT.daysToRenewal} days</div>
-        <div style={{ fontSize: 12, color: 'var(--text-dim)', marginTop: 4 }}>{new Date(ACCOUNT.renewalDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</div>
-      </div>
-    </div>
-  </div>
-);
-
-// ============================================================
-// Hero: AI Handoff Brief
-// ============================================================
-const HandoffBrief = () => (
-  <Card glow={true} style={{ marginBottom: 24, background: 'var(--gradient-soft)', borderColor: 'rgba(139,92,246,0.25)' }}>
-    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 12 }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-        <div style={{
-          width: 28, height: 28, borderRadius: 8, background: 'var(--gradient)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14
-        }}>✨</div>
-        <div style={{ fontSize: 11, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: 2, fontWeight: 600 }}>AI-Generated Handoff Brief · 30-second read</div>
-      </div>
-      <SourceBadges sources={['Gainsight', 'Staircase', 'PX', 'Community', 'Skilljar']} />
-    </div>
-    <p style={{ fontSize: 17, lineHeight: 1.65, color: 'var(--text)', marginBottom: 16 }}>
-      <strong style={{ color: 'var(--accent)' }}>Abbett is a $275K ARR Enterprise account ~34 days from renewal.</strong> The 2-year term is signed and the customer has explicit expansion intent into Advanced Analytics. Health is Green at 74 with strong Outcomes and Experience scores. Staircase tells a strongly positive story (health 84, sentiment 100).
-    </p>
-    <p style={{ fontSize: 15, lineHeight: 1.65, color: 'var(--text-dim)', marginBottom: 20 }}>
-      <strong style={{ color: 'var(--red)' }}>But</strong> the account is carrying <strong>17 open risk CTAs</strong>, AI Insights is Red at 45 and declining, usage has dropped 20%, and there are 10+ open support tickets. The strategic relationship is recovering — operational health is lagging behind it.
-    </p>
-    <div style={{ background: 'rgba(0,0,0,0.25)', borderRadius: 12, padding: 16, borderLeft: '3px solid var(--accent)' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10, flexWrap: 'wrap', gap: 8 }}>
-        <div style={{ fontSize: 11, color: 'var(--accent-2)', textTransform: 'uppercase', letterSpacing: 1.5, fontWeight: 600 }}>Week 1 Priorities</div>
-        {HAS_PRIOR_CSM && (
-          <div style={{ fontSize: 10, color: 'var(--text-faint)' }}>
-            {BRIEF_PROVENANCE.filter(p => p.handoff).length} of {BRIEF_PROVENANCE.length} continuing {PRIOR_CSM_NAME.split(' ')[0]}'s work
-          </div>
-        )}
-      </div>
-      <div style={{ display: 'grid', gap: 12 }}>
-        <div>
-          <div style={{ display: 'flex', gap: 10, marginBottom: 4 }}>
-            <span style={{ color: 'var(--accent)', fontWeight: 700, minWidth: 18 }}>1.</span>
-            <span>Deliver the <strong>Advanced Analytics implementation plan</strong> — committed in presales, 3-4 week timeline, blocks expansion.</span>
-          </div>
-          {HAS_PRIOR_CSM && BRIEF_PROVENANCE[0].handoff && (
-            <div style={{ marginLeft: 28, fontSize: 11, color: 'var(--accent-2)', fontStyle: 'italic' }}>
-              ↳ Continuing {PRIOR_CSM_NAME.split(' ')[0]}'s work · in-flight, awaiting customer kickoff date
-            </div>
-          )}
-        </div>
-        <div>
-          <div style={{ display: 'flex', gap: 10, marginBottom: 4 }}>
-            <span style={{ color: 'var(--accent)', fontWeight: 700, minWidth: 18 }}>2.</span>
-            <span>Chase <strong>Michael Chen</strong> for headcount projections — they unblock final renewal scenario modeling.</span>
-          </div>
-          {HAS_PRIOR_CSM && BRIEF_PROVENANCE[1].handoff && (
-            <div style={{ marginLeft: 28, fontSize: 11, color: 'var(--red)', fontStyle: 'italic' }}>
-              ↳ Continuing {PRIOR_CSM_NAME.split(' ')[0]}'s work · blocked since Apr 28, customer unresponsive
-            </div>
-          )}
-        </div>
-        <div>
-          <div style={{ display: 'flex', gap: 10, marginBottom: 4 }}>
-            <span style={{ color: 'var(--accent)', fontWeight: 700, minWidth: 18 }}>3.</span>
-            <span>Book sponsor check-in with <strong>Sarah Johnson</strong> to reconfirm sponsorship before the renewal window closes.</span>
-          </div>
-          {HAS_PRIOR_CSM && BRIEF_PROVENANCE[2].handoff && (
-            <div style={{ marginLeft: 28, fontSize: 11, color: 'var(--accent-2)', fontStyle: 'italic' }}>
-              ↳ Continuing {PRIOR_CSM_NAME.split(' ')[0]}'s work · last sync Apr 22, 60-day cadence overdue by ~3 weeks
-            </div>
-          )}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+        <ThemeToggle theme={theme} setTheme={setTheme} />
+        <div style={{ textAlign: 'right' }}>
+          <div style={{ fontSize: 11, color: 'var(--text-faint)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 4, fontWeight: 600 }}>Renewal in</div>
+          <div style={{ fontSize: 36, fontWeight: 700, color: 'var(--accent)', lineHeight: 1, letterSpacing: '-0.02em' }}>{ACCOUNT.daysToRenewal} days</div>
+          <div style={{ fontSize: 12, color: 'var(--text-dim)', marginTop: 4 }}>{new Date(ACCOUNT.renewalDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</div>
         </div>
       </div>
-    </div>
-  </Card>
-);
-
-// ============================================================
-// Top stats
-// ============================================================
-const TopStats = () => (
-  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12, marginBottom: 24 }}>
-    <Card><Stat label="Current ARR" value={'$' + (ACCOUNT.arr/1000).toFixed(0) + 'K'} sub={'MRR $' + (ACCOUNT.mrr/1000).toFixed(1) + 'K'} /></Card>
-    <Card><Stat label="Renewable ARR" value={'$' + (ACCOUNT.renewableArr/1000).toFixed(0) + 'K'} sub="At-risk if no action" accent="var(--yellow)" /></Card>
-    <Card><Stat label="Open Upsell" value={'$' + (ACCOUNT.openUpsell/1000).toFixed(0) + 'K'} sub="In pipeline" accent="var(--green)" /></Card>
-    <Card><Stat label="Health Score" value={HEALTH.overall} sub={HEALTH.label + ' · ' + HEALTH.trend} accent="var(--green)" /></Card>
-    <Card><Stat label="Staircase Sentiment" value={STAIRCASE.sentiment} sub="Strongly positive" accent="var(--green)" /></Card>
-    <Card><Stat label="Customer Lifetime" value={ACCOUNT.customerLifetimeMonths + ' mo'} sub={'Since ' + new Date(ACCOUNT.originalContract).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })} /></Card>
-  </div>
-);
-
-// ============================================================
-// Quarterback Map — what the previous CSM was actively driving
-// ============================================================
-const STATUS_STYLES = {
-  'in-flight':  { c: 'var(--accent-2)', bg: 'rgba(6,182,212,0.12)', label: 'In-flight' },
-  'blocked':    { c: 'var(--red)',      bg: 'rgba(247,114,113,0.12)', label: 'Blocked' },
-  'scheduled':  { c: 'var(--accent)',   bg: 'rgba(139,92,246,0.12)', label: 'Scheduled' },
-  'deferred':   { c: 'var(--yellow)',   bg: 'rgba(252,198,66,0.12)', label: 'Deferred' },
-};
-
-const QuarterbackMap = () => {
-  if (!HAS_PRIOR_CSM) return null;
-  const handoverCount = QUARTERBACK_ITEMS.length;
-  const blockedCount = QUARTERBACK_ITEMS.filter(i => i.status === 'blocked').length;
-  const inFlightCount = QUARTERBACK_ITEMS.filter(i => i.status === 'in-flight').length;
-
-  return (
-    <Card style={{ marginBottom: 24 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16, flexWrap: 'wrap', gap: 12 }}>
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4, flexWrap: 'wrap' }}>
-            <h2 style={{ fontSize: 16, fontWeight: 600 }}>What {PRIOR_CSM_NAME} Was Quarterbacking</h2>
-            <SourceBadges sources={['Cockpit', 'Timeline', 'Gainsight']} />
-          </div>
-          <div style={{ fontSize: 12, color: 'var(--text-dim)' }}>
-            Active work in flight on handoff day · {handoverCount} items · {inFlightCount} in-flight, {blockedCount} blocked
-          </div>
-        </div>
-        <div style={{ display: 'flex', gap: 6 }}>
-          <Pill color="var(--accent-2)" bg="rgba(6,182,212,0.12)">{inFlightCount} in-flight</Pill>
-          {blockedCount > 0 && <Pill color="var(--red)" bg="rgba(247,114,113,0.12)">{blockedCount} blocked</Pill>}
-        </div>
-      </div>
-
-      <div style={{ display: 'grid', gap: 10 }}>
-        {QUARTERBACK_ITEMS.map((item, i) => {
-          const s = STATUS_STYLES[item.status];
-          return (
-            <div key={i} style={{
-              background: 'rgba(0,0,0,0.2)',
-              border: '1px solid var(--border)',
-              borderLeft: '3px solid ' + s.c,
-              borderRadius: 10, padding: 14
-            }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8, gap: 12, flexWrap: 'wrap' }}>
-                <div style={{ flex: 1, minWidth: 200 }}>
-                  <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 4 }}>{item.title}</div>
-                  <div style={{ fontSize: 12, color: s.c, fontWeight: 500 }}>{item.statusLabel}</div>
-                </div>
-                <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: 10, color: 'var(--text-faint)', textTransform: 'uppercase', letterSpacing: 1 }}>Last touch</div>
-                  <div style={{ fontSize: 12, fontWeight: 500, color: 'var(--text-dim)' }}>{item.lastTouch}</div>
-                </div>
-              </div>
-
-              <div style={{ fontSize: 12, color: 'var(--text-dim)', lineHeight: 1.5, marginBottom: 10 }}>{item.note}</div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 10, fontSize: 11 }}>
-                <div>
-                  <div style={{ fontSize: 9, color: 'var(--text-faint)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 3 }}>Source</div>
-                  <div style={{ color: 'var(--text-dim)', marginBottom: 2 }}>{item.sourceType}</div>
-                  <div style={{ color: 'var(--text-faint)', fontStyle: 'italic', fontSize: 10 }}>↳ {item.sourceDetail}</div>
-                </div>
-                <div>
-                  <div style={{ fontSize: 9, color: 'var(--text-faint)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 3 }}>Coordinating with</div>
-                  <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
-                    {item.coordinating.map((t, ti) => (
-                      <span key={ti} style={{
-                        fontSize: 10, color: 'var(--text-dim)',
-                        background: 'rgba(255,255,255,0.04)',
-                        border: '1px solid var(--border)', borderRadius: 4,
-                        padding: '2px 6px'
-                      }}>{t}</span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </Card>
-  );
-};
-// ============================================================
-// Signal Reconciliation — pure agent synthesis
-// ============================================================
-const SIGNALS_TABLE = [
-  { system: 'Gainsight', source: 'Gainsight', score: '74', label: 'Green', tone: 'green', read: 'Rollup says the account is healthy.' },
-  { system: 'Scorecard · AI Insights group', source: 'Scorecard', score: '45', label: 'Red, declining', tone: 'red', read: 'Internal AI is flagging deterioration.' },
-  { system: 'Staircase AI', source: 'Staircase', score: '100', label: 'Strongly positive', tone: 'green', read: 'Conversation sentiment is at the top of the range.' },
-  { system: 'PX', source: 'PX', score: '−20%', label: 'Usage drop', tone: 'red', read: 'DAU collapsed to 35% of licensed seats.' },
-  { system: 'Support', source: 'Gainsight', score: '10+', label: 'Open tickets', tone: 'yellow', read: 'Backlog has not cleared since April 15.' },
-  { system: 'Cockpit', source: 'Cockpit', score: '17', label: 'Open risk CTAs', tone: 'red', read: 'Heaviest risk load in the renewal cohort.' },
-];
-
-const SignalReconciliation = () => {
-  const tone = { green: 'var(--green)', yellow: 'var(--yellow)', red: 'var(--red)' };
-  return (
-    <Card style={{ marginBottom: 24 }}>
-      <div style={{ marginBottom: 16 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4, flexWrap: 'wrap' }}>
-          <h2 style={{ fontSize: 16, fontWeight: 600 }}>Cross-System Signal Reconciliation</h2>
-          <SourceBadges sources={['Gainsight', 'Staircase', 'PX', 'Scorecard']} />
-        </div>
-        <div style={{ fontSize: 12, color: 'var(--text-dim)' }}>The systems disagree. Here's how the agent reads the conflict.</div>
-      </div>
-
-      <div style={{ display: 'grid', gap: 8, marginBottom: 20 }}>
-        {SIGNALS_TABLE.map((s, i) => (
-          <div key={i} style={{
-            display: 'grid', gridTemplateColumns: '180px 80px 1fr', gap: 16, alignItems: 'center',
-            padding: '10px 14px', background: 'rgba(0,0,0,0.2)', borderRadius: 8,
-            borderLeft: '3px solid ' + tone[s.tone]
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <SourceBadge source={s.source} />
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <div style={{ fontSize: 18, fontWeight: 700, color: tone[s.tone], lineHeight: 1 }}>{s.score}</div>
-              <div style={{ fontSize: 10, color: 'var(--text-faint)', marginTop: 2 }}>{s.label}</div>
-            </div>
-            <div style={{ fontSize: 13, color: 'var(--text-dim)' }}>
-              <span style={{ color: 'var(--text)', fontWeight: 500 }}>{s.system}.</span> {s.read}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div style={{
-        background: 'rgba(139,92,246,0.08)',
-        border: '1px solid rgba(139,92,246,0.25)',
-        borderRadius: 12,
-        padding: 18,
-        borderLeft: '3px solid var(--accent)'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
-          <span style={{ fontSize: 14 }}>🧠</span>
-          <div style={{ fontSize: 11, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: 1.5, fontWeight: 600 }}>Agent Synthesis</div>
-        </div>
-        <p style={{ fontSize: 14, lineHeight: 1.65, color: 'var(--text)', marginBottom: 14 }}>
-          The systems disagree because they're measuring different things at different speeds. <strong>Staircase reflects the most recent executive conversations</strong> — Sarah Johnson said "confidence has been restored" and the 2-year term got signed, so sentiment correctly reads strong. <strong>PX and Cockpit reflect what's happening on the ground</strong> — end users are logging in less, support tickets aren't clearing, and Sally hasn't executed the adoption assurance plan yet.
-        </p>
-        <p style={{ fontSize: 14, lineHeight: 1.65, color: 'var(--text-dim)', marginBottom: 16 }}>
-          The Gainsight rollup (74 Green) is averaging across both, which is why it looks fine and why it's misleading. <strong style={{ color: 'var(--text)' }}>The relationship is recovering, but the operational signals are running 4–6 weeks behind that recovery.</strong> Expect AI Insights and PX to follow Staircase up — but only if the operational work gets done.
-        </p>
-
-        <div style={{ background: 'rgba(0,0,0,0.25)', borderRadius: 10, padding: 14 }}>
-          <div style={{ fontSize: 11, color: 'var(--accent-2)', textTransform: 'uppercase', letterSpacing: 1.5, fontWeight: 600, marginBottom: 10 }}>Which signal to trust for which decision</div>
-          <div style={{ display: 'grid', gap: 8, fontSize: 13 }}>
-            <div style={{ display: 'flex', gap: 12 }}>
-              <span style={{ color: 'var(--accent-2)', fontWeight: 600, minWidth: 200 }}>Renewal commercial story →</span>
-              <span style={{ color: 'var(--text-dim)' }}>Staircase + Gainsight rollup. Lead with sentiment recovery and the signed term.</span>
-            </div>
-            <div style={{ display: 'flex', gap: 12 }}>
-              <span style={{ color: 'var(--accent-2)', fontWeight: 600, minWidth: 200 }}>Internal risk forecasting →</span>
-              <span style={{ color: 'var(--text-dim)' }}>AI Insights + PX. They're the leading indicators of where the next 90 days are headed.</span>
-            </div>
-            <div style={{ display: 'flex', gap: 12 }}>
-              <span style={{ color: 'var(--accent-2)', fontWeight: 600, minWidth: 200 }}>Expansion conversation →</span>
-              <span style={{ color: 'var(--text-dim)' }}>Don't pitch Advanced Analytics until DAU recovers. PX numbers will get questioned.</span>
-            </div>
-            <div style={{ display: 'flex', gap: 12 }}>
-              <span style={{ color: 'var(--accent-2)', fontWeight: 600, minWidth: 200 }}>Exec status reporting →</span>
-              <span style={{ color: 'var(--text-dim)' }}>Cite both. Report Green health with a caveat on the 17 open risk CTAs. Don't hide the split.</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </Card>
-  );
-};
-
-// ============================================================
-// Commitments
-// ============================================================
-const Commitments = () => {
-  const [filter, setFilter] = useState('all');
-  const filtered = filter === 'all' ? COMMITMENTS : COMMITMENTS.filter((c) => c.type === filter);
-  const colors = {
-    value: { c: 'var(--green)', bg: 'rgba(63,206,150,0.10)' },
-    commitment: { c: 'var(--accent)', bg: 'rgba(139,92,246,0.12)' },
-    concern: { c: 'var(--yellow)', bg: 'rgba(252,198,66,0.12)' },
-  };
-  const labels = { all: 'All', value: 'Value delivered', commitment: 'Commitments', concern: 'Concerns' };
-  return (
-    <Card style={{ marginBottom: 24 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16, flexWrap: 'wrap', gap: 12 }}>
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4, flexWrap: 'wrap' }}>
-            <h2 style={{ fontSize: 16, fontWeight: 600 }}>Commitments & Promises from Presales</h2>
-            <SourceBadges sources={['Staircase', 'Timeline']} />
-          </div>
-          <div style={{ fontSize: 12, color: 'var(--text-dim)' }}>Synthesized from Staircase conversations + Gainsight timeline</div>
-        </div>
-        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-          {['all', 'value', 'commitment', 'concern'].map((f) => (
-            <button key={f} onClick={() => setFilter(f)} style={{
-              padding: '5px 12px', borderRadius: 999, fontSize: 11, fontWeight: 500,
-              border: '1px solid ' + (filter === f ? 'var(--accent)' : 'var(--border)'),
-              background: filter === f ? 'rgba(139,92,246,0.15)' : 'transparent',
-              color: filter === f ? 'var(--accent)' : 'var(--text-dim)',
-              cursor: 'pointer', letterSpacing: 0.5
-            }}>{labels[f]}</button>
-          ))}
-        </div>
-      </div>
-
-      {/* Customer-dates anchor strip */}
-      <div style={{
-        display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 10, marginBottom: 16,
-        padding: 12, background: 'rgba(0,0,0,0.2)', borderRadius: 10, border: '1px solid var(--border)'
-      }}>
-        <div>
-          <div style={{ fontSize: 10, color: 'var(--text-faint)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 3 }}>Customer Since</div>
-          <div style={{ fontSize: 13, fontWeight: 600 }}>{CUSTOMER_DATES.goLive}</div>
-          <div style={{ fontSize: 10, color: 'var(--text-faint)', marginTop: 2 }}>Go-live</div>
-        </div>
-        <div>
-          <div style={{ fontSize: 10, color: 'var(--text-faint)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 3 }}>Current Term Started</div>
-          <div style={{ fontSize: 13, fontWeight: 600 }}>{CUSTOMER_DATES.currentTermStart}</div>
-          <div style={{ fontSize: 10, color: 'var(--text-faint)', marginTop: 2 }}>Original contract</div>
-        </div>
-        <div>
-          <div style={{ fontSize: 10, color: 'var(--text-faint)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 3 }}>Renewal Signed</div>
-          <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--green)' }}>{CUSTOMER_DATES.renewalSigned}</div>
-          <div style={{ fontSize: 10, color: 'var(--text-faint)', marginTop: 2 }}>2-year DocuSign</div>
-        </div>
-        <div>
-          <div style={{ fontSize: 10, color: 'var(--text-faint)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 3 }}>New Term Through</div>
-          <div style={{ fontSize: 13, fontWeight: 600 }}>{CUSTOMER_DATES.newTermEnd}</div>
-          <div style={{ fontSize: 10, color: 'var(--text-faint)', marginTop: 2 }}>Next renewal</div>
-        </div>
-      </div>
-
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 10 }}>
-        {filtered.map((c, i) => (
-          <div key={i} style={{
-            background: colors[c.type].bg,
-            border: '1px solid ' + colors[c.type].c + '25',
-            borderRadius: 10, padding: 12,
-            borderLeft: '3px solid ' + colors[c.type].c
-          }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4, gap: 6 }}>
-              <div style={{ fontSize: 10, color: colors[c.type].c, textTransform: 'uppercase', letterSpacing: 1, fontWeight: 600 }}>{c.category}</div>
-              {c.overdue && (
-                <span style={{
-                  fontSize: 9, color: 'var(--red)', background: 'rgba(247,114,113,0.12)',
-                  border: '1px solid rgba(247,114,113,0.3)', borderRadius: 4,
-                  padding: '1px 6px', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase'
-                }}>⚠ Overdue</span>
-              )}
-            </div>
-            <div style={{ fontSize: 13, color: 'var(--text)', marginBottom: 8, lineHeight: 1.45 }}>{c.text}</div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
-              <span style={{
-                fontSize: 10, color: 'var(--text)', background: 'rgba(255,255,255,0.06)',
-                border: '1px solid var(--border)', borderRadius: 4, padding: '1px 6px',
-                fontWeight: 600, fontFamily: 'ui-monospace, "SF Mono", Menlo, monospace'
-              }}>{c.date}</span>
-              <span style={{ fontSize: 10, color: 'var(--text-faint)' }}>· {c.source}</span>
-            </div>
-            <div style={{ fontSize: 10, color: 'var(--text-faint)', fontStyle: 'italic', lineHeight: 1.4 }}>↳ {c.citation}</div>
-          </div>
-        ))}
-      </div>
-    </Card>
-  );
-};
-
-// ============================================================
-// Stakeholders
-// ============================================================
-const Stakeholders = () => {
-  const signalColor = {
-    champion: { c: 'var(--green)', bg: 'rgba(63,206,150,0.15)', label: 'Champion' },
-    engaged: { c: 'var(--accent-2)', bg: 'rgba(6,182,212,0.12)', label: 'Engaged' },
-    watchful: { c: 'var(--yellow)', bg: 'rgba(252,198,66,0.12)', label: 'Watchful' },
-  };
-  return (
-    <Card style={{ marginBottom: 24 }}>
-      <div style={{ marginBottom: 16 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4, flexWrap: 'wrap' }}>
-          <h2 style={{ fontSize: 16, fontWeight: 600 }}>Stakeholder Map</h2>
-          <SourceBadges sources={['Gainsight', 'Staircase']} />
-        </div>
-        <div style={{ fontSize: 12, color: 'var(--text-dim)' }}>Key contacts with engagement signal · {STAKEHOLDERS.length} stakeholders identified</div>
-      </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 12 }}>
-        {STAKEHOLDERS.map((s, i) => {
-          const sig = signalColor[s.signal];
-          return (
-            <div key={i} style={{
-              background: 'rgba(0,0,0,0.2)',
-              border: '1px solid var(--border)',
-              borderRadius: 12, padding: 14,
-              position: 'relative', overflow: 'hidden'
-            }}>
-              <div style={{ position: 'absolute', top: 0, left: 0, width: 3, height: '100%', background: sig.c }} />
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
-                <div>
-                  <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 2 }}>{s.name}</div>
-                  <div style={{ fontSize: 11, color: 'var(--text-dim)' }}>{s.role}</div>
-                </div>
-                <Pill color={sig.c} bg={sig.bg}>{sig.label}</Pill>
-              </div>
-              <div style={{ fontSize: 12, color: 'var(--text-dim)', lineHeight: 1.5, marginBottom: 8 }}>{s.note}</div>
-              <div style={{ display: 'flex', gap: 10, fontSize: 10, color: 'var(--text-faint)' }}>
-                <span>Depth: <span style={{ color: 'var(--text-dim)' }}>{s.depth}</span></span>
-                <span>·</span>
-                <span>Last touch: <span style={{ color: 'var(--text-dim)' }}>{s.lastTouch}</span></span>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </Card>
-  );
-};
-
-// ============================================================
-// Engagement + Risk
-// ============================================================
-const EngagementAndRisk = () => {
-  const statusColor = { green: 'var(--green)', yellow: 'var(--yellow)', red: 'var(--red)' };
-  return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: 24, marginBottom: 24 }}>
-      <Card>
-        <div style={{ marginBottom: 16 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4, flexWrap: 'wrap' }}>
-            <h2 style={{ fontSize: 16, fontWeight: 600 }}>Adoption & Engagement Signals</h2>
-            <SourceBadges sources={['PX', 'Community', 'Skilljar', 'Scorecard']} />
-          </div>
-          <div style={{ fontSize: 12, color: 'var(--text-dim)' }}>Cross-product signals from satellite tools</div>
-        </div>
-        <div style={{ display: 'grid', gap: 8 }}>
-          {ENGAGEMENT_SIGNALS.map((s, i) => (
-            <div key={i} style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10,
-              padding: '10px 12px', background: 'rgba(0,0,0,0.2)', borderRadius: 8,
-              borderLeft: '3px solid ' + statusColor[s.status]
-            }}>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ marginBottom: 4 }}>
-                  <SourceBadge source={s.source} />
-                </div>
-                <div style={{ fontSize: 13, fontWeight: 500 }}>{s.value}</div>
-              </div>
-              <div style={{ fontSize: 11, color: 'var(--text-dim)', textAlign: 'right', maxWidth: 180 }}>{s.detail}</div>
-            </div>
-          ))}
-        </div>
-      </Card>
-
-      <Card>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16, flexWrap: 'wrap', gap: 12 }}>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4, flexWrap: 'wrap' }}>
-              <h2 style={{ fontSize: 16, fontWeight: 600 }}>Risk Radar</h2>
-              <SourceBadges sources={['Cockpit', 'Staircase']} />
-            </div>
-            <div style={{ fontSize: 12, color: 'var(--text-dim)' }}>17 risk CTAs total · 7 high priority surfaced</div>
-          </div>
-          <Pill color="var(--red)" bg="rgba(247,114,113,0.12)">{RISKS.length} open</Pill>
-        </div>
-        <div style={{ display: 'grid', gap: 8 }}>
-          {RISKS.map((r, i) => (
-            <div key={i} style={{
-              padding: 12, background: 'rgba(0,0,0,0.2)', borderRadius: 8,
-              borderLeft: '3px solid ' + (r.priority === 'High' ? 'var(--red)' : 'var(--yellow)')
-            }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4, gap: 8 }}>
-                <div style={{ fontSize: 13, fontWeight: 500 }}>{r.name}</div>
-                <Pill color={r.priority === 'High' ? 'var(--red)' : 'var(--yellow)'} bg={r.priority === 'High' ? 'rgba(247,114,113,0.12)' : 'rgba(252,198,66,0.12)'}>{r.priority}</Pill>
-              </div>
-              <div style={{ fontSize: 11, color: 'var(--text-dim)', marginBottom: 6 }}>{r.note}</div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 10, color: 'var(--text-faint)' }}>
-                <span>Owner: {r.owner}</span>
-                <span>·</span>
-                <SourceBadge source={r.source} />
-              </div>
-            </div>
-          ))}
-        </div>
-      </Card>
-    </div>
-  );
-};
-
-// ============================================================
-// Success Plans
-// ============================================================
-const SuccessPlans = () => (
-  <Card style={{ marginBottom: 24 }}>
-    <div style={{ marginBottom: 16 }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4, flexWrap: 'wrap' }}>
-        <h2 style={{ fontSize: 16, fontWeight: 600 }}>Active Success Plans</h2>
-        <SourceBadges sources={['Gainsight']} />
-      </div>
-      <div style={{ fontSize: 12, color: 'var(--text-dim)' }}>{SUCCESS_PLANS.length} plans in motion · Recommend hygiene review week 1</div>
-    </div>
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 12 }}>
-      {SUCCESS_PLANS.map((p, i) => (
-        <div key={i} style={{ background: 'rgba(0,0,0,0.2)', borderRadius: 10, padding: 14, border: '1px solid var(--border)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-            <div style={{ fontSize: 13, fontWeight: 600, flex: 1 }}>{p.name}</div>
-            <span style={{ fontSize: 18, fontWeight: 700, color: 'var(--accent)' }}>{p.objectives}</span>
-          </div>
-          <div style={{ fontSize: 11, color: 'var(--text-faint)', marginBottom: 6 }}>Owner: {p.owner}</div>
-          <div style={{ fontSize: 12, color: 'var(--text-dim)', lineHeight: 1.5 }}>{p.note}</div>
-        </div>
-      ))}
-    </div>
-  </Card>
-);
-
-// ============================================================
-// Ask the Analyst
-// ============================================================
-const AskAnalyst = () => {
-  const [open, setOpen] = useState(null);
-  const renderLine = (line, idx) => {
-    const parts = line.split(/(\*\*[^*]+\*\*)/g);
-    return (
-      <div key={idx} style={{ marginBottom: line === '' ? 8 : 0 }}>
-        {parts.map((p, pi) =>
-          p.startsWith('**') && p.endsWith('**')
-            ? <strong key={pi} style={{ color: 'var(--text)' }}>{p.slice(2, -2)}</strong>
-            : <span key={pi}>{p}</span>
-        )}
-      </div>
-    );
-  };
-  return (
-    <Card glow={true} style={{ marginBottom: 24, background: 'var(--gradient-soft)', borderColor: 'rgba(6,182,212,0.25)' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8, flexWrap: 'wrap', gap: 12 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{
-            width: 28, height: 28, borderRadius: 8, background: 'linear-gradient(135deg, #06b6d4, #8b5cf6)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14
-          }}>💬</div>
-          <h2 style={{ fontSize: 16, fontWeight: 600 }}>Ask the Handoff Analyst</h2>
-        </div>
-        <SourceBadges sources={['Gainsight', 'Staircase', 'PX', 'Community', 'Skilljar']} />
-      </div>
-      <div style={{ fontSize: 12, color: 'var(--text-dim)', marginBottom: 16 }}>Pre-canned answers grounded in Gainsight + Staircase data · Click any question</div>
-      <div style={{ display: 'grid', gap: 8 }}>
-        {ANALYST_QA.map((qa, i) => (
-          <div key={i} style={{
-            background: 'rgba(0,0,0,0.25)', borderRadius: 10, border: '1px solid var(--border)',
-            overflow: 'hidden'
-          }}>
-            <button
-              onClick={() => setOpen(open === i ? null : i)}
-              style={{
-                width: '100%', textAlign: 'left', padding: 14, background: 'transparent',
-                border: 'none', color: 'var(--text)', cursor: 'pointer',
-                display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10,
-                fontSize: 13, fontWeight: 500
-              }}
-            >
-              <span>{qa.q}</span>
-              <span style={{ color: 'var(--accent-2)', fontSize: 16, transform: open === i ? 'rotate(90deg)' : 'none', transition: 'transform 0.2s' }}>›</span>
-            </button>
-            {open === i && (
-              <div style={{
-                padding: '14px', fontSize: 13, color: 'var(--text-dim)', lineHeight: 1.65,
-                borderTop: '1px solid var(--border)', whiteSpace: 'pre-wrap'
-              }}>
-                {qa.a.split('\n').map(renderLine)}
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-    </Card>
-  );
-};
-
-// ============================================================
-// Footer
-// ============================================================
-const Footer = () => (
-  <div style={{ padding: '24px 40px', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12, fontSize: 11, color: 'var(--text-faint)' }}>
-    <div>Handoff Analyst · Pulse 2026 SC Demo · Data snapshotted from CSMCP-Demo + Staircase AI</div>
-    <div style={{ display: 'flex', gap: 16 }}>
-      <span>CSM: {ACCOUNT.csm}</span>
-      <span>SC: {ACCOUNT.solutionsConsultant}</span>
     </div>
   </div>
 );
@@ -991,31 +527,29 @@ const StickyNav = () => {
   return (
     <div style={{
       position: 'sticky', top: 0, zIndex: 10,
-      background: 'rgba(10,11,20,0.85)',
-      backdropFilter: 'blur(12px)',
+      background: 'var(--bg-1)',
       borderBottom: '1px solid var(--border)',
-      padding: '12px 40px'
+      padding: '12px 40px',
+      boxShadow: 'var(--shadow-100)'
     }}>
       <div style={{ maxWidth: 1400, margin: '0 auto', display: 'flex', gap: 4, flexWrap: 'wrap', alignItems: 'center' }}>
-        <div style={{ fontSize: 10, color: 'var(--text-faint)', textTransform: 'uppercase', letterSpacing: 1.5, marginRight: 12 }}>Jump to</div>
+        <div style={{ fontSize: 10, color: 'var(--text-faint)', textTransform: 'uppercase', letterSpacing: 1.5, marginRight: 12, fontWeight: 700 }}>Jump to</div>
         {NAV_SECTIONS.map((s) => (
           <button key={s.id} onClick={() => scrollTo(s.id)} style={{
-            padding: '6px 12px', borderRadius: 8, fontSize: 12, fontWeight: 500,
+            padding: '6px 12px', borderRadius: 6, fontSize: 12, fontWeight: 500,
             border: '1px solid transparent',
             background: 'transparent',
             color: 'var(--text-dim)',
             cursor: 'pointer',
-            transition: 'all 0.15s'
+            transition: 'all 0.12s'
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.background = 'rgba(139,92,246,0.12)';
+            e.currentTarget.style.background = 'var(--accent-soft)';
             e.currentTarget.style.color = 'var(--accent)';
-            e.currentTarget.style.borderColor = 'rgba(139,92,246,0.3)';
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.background = 'transparent';
             e.currentTarget.style.color = 'var(--text-dim)';
-            e.currentTarget.style.borderColor = 'transparent';
           }}>{s.label}</button>
         ))}
       </div>
@@ -1024,38 +558,611 @@ const StickyNav = () => {
 };
 
 // ============================================================
-// App
+// Hero: AI Handoff Brief
 // ============================================================
-const App = () => (
-  <div>
-    <div style={{ maxWidth: 1400, margin: '0 auto' }}>
-      <Header />
-    </div>
-    <StickyNav />
-    <div style={{ maxWidth: 1400, margin: '0 auto' }}>
-      <div style={{ padding: '24px 40px' }}>
-        <div id="brief"><HandoffBrief /></div>
-        <TopStats />
-        {HAS_PRIOR_CSM && <div id="quarterback"><QuarterbackMap /></div>}
-        <div id="reconciliation"><SignalReconciliation /></div>
-        <div id="commitments"><Commitments /></div>
-        <div id="stakeholders"><Stakeholders /></div>
-        <div id="signals"><div id="risks"><EngagementAndRisk /></div></div>
-        <div id="plans"><SuccessPlans /></div>
-        <div id="qa"><AskAnalyst /></div>
+const HandoffBrief = () => (
+  <Card glow={true} style={{ marginBottom: 24, borderLeft: '3px solid var(--accent)' }}>
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 12 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <div style={{
+          width: 28, height: 28, borderRadius: 6, background: 'var(--accent)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, color: '#fff'
+        }}>✦</div>
+        <div style={{ fontSize: 11, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: 1.5, fontWeight: 700 }}>AI-Generated Handoff Brief · 30-second read</div>
       </div>
-      <Footer />
+      <SourceBadges sources={['Gainsight', 'Staircase', 'PX', 'Community', 'Skilljar']} />
+    </div>
+    <p style={{ fontSize: 16, lineHeight: 1.6, color: 'var(--text)', marginBottom: 16 }}>
+      <strong style={{ color: 'var(--accent)' }}>Abbett is a $275K ARR Enterprise account ~34 days from renewal.</strong> The 2-year term is signed and the customer has explicit expansion intent into Advanced Analytics. Health is Green at 74 with strong Outcomes and Experience scores. Staircase tells a strongly positive story (health 84, sentiment 100).
+    </p>
+    <p style={{ fontSize: 14, lineHeight: 1.6, color: 'var(--text-body)', marginBottom: 20 }}>
+      <strong style={{ color: 'var(--red)' }}>But</strong> the account is carrying <strong>17 open risk CTAs</strong>, AI Insights is Red at 45 and declining, usage has dropped 20%, and there are 10+ open support tickets. The strategic relationship is recovering — operational health is lagging behind it.
+    </p>
+    <div style={{ background: 'var(--bg-3)', borderRadius: 8, padding: 16, border: '1px solid var(--border)' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10, flexWrap: 'wrap', gap: 8 }}>
+        <div style={{ fontSize: 11, color: 'var(--accent-2)', textTransform: 'uppercase', letterSpacing: 1.5, fontWeight: 700 }}>Week 1 Priorities</div>
+        {HAS_PRIOR_CSM && (
+          <div style={{ fontSize: 10, color: 'var(--text-faint)', fontWeight: 600 }}>
+            {BRIEF_PROVENANCE.filter(p => p.handoff).length} of {BRIEF_PROVENANCE.length} continuing {PRIOR_CSM_NAME.split(' ')[0]}'s work
+          </div>
+        )}
+      </div>
+      <div style={{ display: 'grid', gap: 12 }}>
+        <div>
+          <div style={{ display: 'flex', gap: 10, marginBottom: 4 }}>
+            <span style={{ color: 'var(--accent)', fontWeight: 700, minWidth: 18 }}>1.</span>
+            <span style={{ color: 'var(--text)' }}>Deliver the <strong>Advanced Analytics implementation plan</strong> — committed in presales, 3-4 week timeline, blocks expansion.</span>
+          </div>
+          {HAS_PRIOR_CSM && BRIEF_PROVENANCE[0].handoff && (
+            <div style={{ marginLeft: 28, fontSize: 11, color: 'var(--accent-2)', fontStyle: 'italic' }}>
+              ↳ Continuing {PRIOR_CSM_NAME.split(' ')[0]}'s work · in-flight, awaiting customer kickoff date
+            </div>
+          )}
+        </div>
+        <div>
+          <div style={{ display: 'flex', gap: 10, marginBottom: 4 }}>
+            <span style={{ color: 'var(--accent)', fontWeight: 700, minWidth: 18 }}>2.</span>
+            <span style={{ color: 'var(--text)' }}>Chase <strong>Michael Chen</strong> for headcount projections — they unblock final renewal scenario modeling.</span>
+          </div>
+          {HAS_PRIOR_CSM && BRIEF_PROVENANCE[1].handoff && (
+            <div style={{ marginLeft: 28, fontSize: 11, color: 'var(--red)', fontStyle: 'italic' }}>
+              ↳ Continuing {PRIOR_CSM_NAME.split(' ')[0]}'s work · blocked since Apr 28, customer unresponsive
+            </div>
+          )}
+        </div>
+        <div>
+          <div style={{ display: 'flex', gap: 10, marginBottom: 4 }}>
+            <span style={{ color: 'var(--accent)', fontWeight: 700, minWidth: 18 }}>3.</span>
+            <span style={{ color: 'var(--text)' }}>Book sponsor check-in with <strong>Sarah Johnson</strong> to reconfirm sponsorship before the renewal window closes.</span>
+          </div>
+          {HAS_PRIOR_CSM && BRIEF_PROVENANCE[2].handoff && (
+            <div style={{ marginLeft: 28, fontSize: 11, color: 'var(--accent-2)', fontStyle: 'italic' }}>
+              ↳ Continuing {PRIOR_CSM_NAME.split(' ')[0]}'s work · last sync Apr 22, 60-day cadence overdue by ~3 weeks
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  </Card>
+);
+
+// ============================================================
+// Top stats
+// ============================================================
+const TopStats = () => (
+  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12, marginBottom: 24 }}>
+    <Card><Stat label="Current ARR" value={'$' + (ACCOUNT.arr/1000).toFixed(0) + 'K'} sub={'MRR $' + (ACCOUNT.mrr/1000).toFixed(1) + 'K'} /></Card>
+    <Card><Stat label="Renewable ARR" value={'$' + (ACCOUNT.renewableArr/1000).toFixed(0) + 'K'} sub="At-risk if no action" accent="var(--yellow)" /></Card>
+    <Card><Stat label="Open Upsell" value={'$' + (ACCOUNT.openUpsell/1000).toFixed(0) + 'K'} sub="In pipeline" accent="var(--green)" /></Card>
+    <Card><Stat label="Health Score" value={HEALTH.overall} sub={HEALTH.label + ' · ' + HEALTH.trend} accent="var(--green)" /></Card>
+    <Card><Stat label="Staircase Sentiment" value={STAIRCASE.sentiment} sub="Strongly positive" accent="var(--green)" /></Card>
+    <Card><Stat label="Customer Lifetime" value={ACCOUNT.customerLifetimeMonths + ' mo'} sub={'Since ' + new Date(ACCOUNT.originalContract).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })} /></Card>
+  </div>
+);
+
+// ============================================================
+// Quarterback Map
+// ============================================================
+const STATUS_STYLES = {
+  'in-flight':  { c: 'var(--accent-2)', bg: 'var(--accent-2-soft)', label: 'In-flight' },
+  'blocked':    { c: 'var(--red)',      bg: 'var(--red-soft)', label: 'Blocked' },
+  'scheduled':  { c: 'var(--accent)',   bg: 'var(--accent-soft)', label: 'Scheduled' },
+  'deferred':   { c: 'var(--yellow)',   bg: 'var(--yellow-soft)', label: 'Deferred' },
+};
+
+const QuarterbackMap = () => {
+  if (!HAS_PRIOR_CSM) return null;
+  const handoverCount = QUARTERBACK_ITEMS.length;
+  const blockedCount = QUARTERBACK_ITEMS.filter(i => i.status === 'blocked').length;
+  const inFlightCount = QUARTERBACK_ITEMS.filter(i => i.status === 'in-flight').length;
+
+  return (
+    <Card style={{ marginBottom: 24 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16, flexWrap: 'wrap', gap: 12 }}>
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4, flexWrap: 'wrap' }}>
+            <h2 style={{ fontSize: 16, fontWeight: 600, color: 'var(--text)' }}>What {PRIOR_CSM_NAME} Was Quarterbacking</h2>
+            <SourceBadges sources={['Cockpit', 'Timeline', 'Gainsight']} />
+          </div>
+          <div style={{ fontSize: 12, color: 'var(--text-dim)' }}>
+            Active work in flight on handoff day · {handoverCount} items · {inFlightCount} in-flight, {blockedCount} blocked
+          </div>
+        </div>
+        <div style={{ display: 'flex', gap: 6 }}>
+          <Pill color="var(--accent-2)" bg="var(--accent-2-soft)">{inFlightCount} in-flight</Pill>
+          {blockedCount > 0 && <Pill color="var(--red)" bg="var(--red-soft)">{blockedCount} blocked</Pill>}
+        </div>
+      </div>
+
+      <div style={{ display: 'grid', gap: 10 }}>
+        {QUARTERBACK_ITEMS.map((item, i) => {
+          const s = STATUS_STYLES[item.status];
+          return (
+            <div key={i} style={{
+              background: 'var(--bg-3)',
+              border: '1px solid var(--border)',
+              borderLeft: '3px solid ' + s.c,
+              borderRadius: 8, padding: 14
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8, gap: 12, flexWrap: 'wrap' }}>
+                <div style={{ flex: 1, minWidth: 200 }}>
+                  <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 4, color: 'var(--text)' }}>{item.title}</div>
+                  <div style={{ fontSize: 12, color: s.c, fontWeight: 600 }}>{item.statusLabel}</div>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: 10, color: 'var(--text-faint)', textTransform: 'uppercase', letterSpacing: 1, fontWeight: 600 }}>Last touch</div>
+                  <div style={{ fontSize: 12, fontWeight: 500, color: 'var(--text-dim)' }}>{item.lastTouch}</div>
+                </div>
+              </div>
+
+              <div style={{ fontSize: 13, color: 'var(--text-body)', lineHeight: 1.5, marginBottom: 10 }}>{item.note}</div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 10, fontSize: 11 }}>
+                <div>
+                  <div style={{ fontSize: 9, color: 'var(--text-faint)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 3, fontWeight: 600 }}>Source</div>
+                  <div style={{ color: 'var(--text-body)', marginBottom: 2 }}>{item.sourceType}</div>
+                  <div style={{ color: 'var(--text-faint)', fontStyle: 'italic', fontSize: 10 }}>↳ {item.sourceDetail}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: 9, color: 'var(--text-faint)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 3, fontWeight: 600 }}>Coordinating with</div>
+                  <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+                    {item.coordinating.map((t, ti) => (
+                      <span key={ti} style={{
+                        fontSize: 10, color: 'var(--text-body)',
+                        background: 'var(--bg-1)',
+                        border: '1px solid var(--border)', borderRadius: 4,
+                        padding: '2px 6px'
+                      }}>{t}</span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </Card>
+  );
+};
+
+// ============================================================
+// Signal Reconciliation
+// ============================================================
+const SignalReconciliation = () => {
+  const tone = { green: 'var(--green)', yellow: 'var(--yellow)', red: 'var(--red)' };
+  return (
+    <Card style={{ marginBottom: 24 }}>
+      <div style={{ marginBottom: 16 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4, flexWrap: 'wrap' }}>
+          <h2 style={{ fontSize: 16, fontWeight: 600, color: 'var(--text)' }}>Cross-System Signal Reconciliation</h2>
+          <SourceBadges sources={['Gainsight', 'Staircase', 'PX', 'Scorecard']} />
+        </div>
+        <div style={{ fontSize: 12, color: 'var(--text-dim)' }}>The systems disagree. Here's how the agent reads the conflict.</div>
+      </div>
+
+      <div style={{ display: 'grid', gap: 8, marginBottom: 20 }}>
+        {SIGNALS_TABLE.map((s, i) => (
+          <div key={i} style={{
+            display: 'grid', gridTemplateColumns: '180px 80px 1fr', gap: 16, alignItems: 'center',
+            padding: '10px 14px', background: 'var(--bg-3)', borderRadius: 8,
+            borderLeft: '3px solid ' + tone[s.tone]
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <SourceBadge source={s.source} />
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <div style={{ fontSize: 18, fontWeight: 700, color: tone[s.tone], lineHeight: 1 }}>{s.score}</div>
+              <div style={{ fontSize: 10, color: 'var(--text-faint)', marginTop: 2, fontWeight: 600 }}>{s.label}</div>
+            </div>
+            <div style={{ fontSize: 13, color: 'var(--text-body)' }}>
+              <span style={{ color: 'var(--text)', fontWeight: 600 }}>{s.system}.</span> {s.read}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div style={{
+        background: 'var(--accent-soft)',
+        border: '1px solid var(--border)',
+        borderRadius: 8,
+        padding: 18,
+        borderLeft: '3px solid var(--accent)'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+          <span style={{ fontSize: 14 }}>🧠</span>
+          <div style={{ fontSize: 11, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: 1.5, fontWeight: 700 }}>Agent Synthesis</div>
+        </div>
+        <p style={{ fontSize: 14, lineHeight: 1.6, color: 'var(--text)', marginBottom: 14 }}>
+          The systems disagree because they're measuring different things at different speeds. <strong>Staircase reflects the most recent executive conversations</strong> — Sarah Johnson said "confidence has been restored" and the 2-year term got signed, so sentiment correctly reads strong. <strong>PX and Cockpit reflect what's happening on the ground</strong> — end users are logging in less, support tickets aren't clearing, and Sally hasn't executed the adoption assurance plan yet.
+        </p>
+        <p style={{ fontSize: 14, lineHeight: 1.6, color: 'var(--text-body)', marginBottom: 16 }}>
+          The Gainsight rollup (74 Green) is averaging across both, which is why it looks fine and why it's misleading. <strong style={{ color: 'var(--text)' }}>The relationship is recovering, but the operational signals are running 4–6 weeks behind that recovery.</strong> Expect AI Insights and PX to follow Staircase up — but only if the operational work gets done.
+        </p>
+
+        <div style={{ background: 'var(--bg-1)', borderRadius: 8, padding: 14, border: '1px solid var(--border)' }}>
+          <div style={{ fontSize: 11, color: 'var(--accent-2)', textTransform: 'uppercase', letterSpacing: 1.5, fontWeight: 700, marginBottom: 10 }}>Which signal to trust for which decision</div>
+          <div style={{ display: 'grid', gap: 8, fontSize: 13 }}>
+            <div style={{ display: 'flex', gap: 12 }}>
+              <span style={{ color: 'var(--accent-2)', fontWeight: 600, minWidth: 200 }}>Renewal commercial story →</span>
+              <span style={{ color: 'var(--text-body)' }}>Staircase + Gainsight rollup. Lead with sentiment recovery and the signed term.</span>
+            </div>
+            <div style={{ display: 'flex', gap: 12 }}>
+              <span style={{ color: 'var(--accent-2)', fontWeight: 600, minWidth: 200 }}>Internal risk forecasting →</span>
+              <span style={{ color: 'var(--text-body)' }}>AI Insights + PX. They're the leading indicators of where the next 90 days are headed.</span>
+            </div>
+            <div style={{ display: 'flex', gap: 12 }}>
+              <span style={{ color: 'var(--accent-2)', fontWeight: 600, minWidth: 200 }}>Expansion conversation →</span>
+              <span style={{ color: 'var(--text-body)' }}>Don't pitch Advanced Analytics until DAU recovers. PX numbers will get questioned.</span>
+            </div>
+            <div style={{ display: 'flex', gap: 12 }}>
+              <span style={{ color: 'var(--accent-2)', fontWeight: 600, minWidth: 200 }}>Exec status reporting →</span>
+              <span style={{ color: 'var(--text-body)' }}>Cite both. Report Green health with a caveat on the 17 open risk CTAs. Don't hide the split.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Card>
+  );
+};
+
+// ============================================================
+// Commitments
+// ============================================================
+const Commitments = () => {
+  const [filter, setFilter] = useState('all');
+  const filtered = filter === 'all' ? COMMITMENTS : COMMITMENTS.filter((c) => c.type === filter);
+  const colors = {
+    value: { c: 'var(--green)', bg: 'var(--green-soft)' },
+    commitment: { c: 'var(--accent)', bg: 'var(--accent-soft)' },
+    concern: { c: 'var(--yellow)', bg: 'var(--yellow-soft)' },
+  };
+  const labels = { all: 'All', value: 'Value delivered', commitment: 'Commitments', concern: 'Concerns' };
+  return (
+    <Card style={{ marginBottom: 24 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16, flexWrap: 'wrap', gap: 12 }}>
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4, flexWrap: 'wrap' }}>
+            <h2 style={{ fontSize: 16, fontWeight: 600, color: 'var(--text)' }}>Commitments & Promises from Presales</h2>
+            <SourceBadges sources={['Staircase', 'Timeline']} />
+          </div>
+          <div style={{ fontSize: 12, color: 'var(--text-dim)' }}>Synthesized from Staircase conversations + Gainsight timeline</div>
+        </div>
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+          {['all', 'value', 'commitment', 'concern'].map((f) => (
+            <button key={f} onClick={() => setFilter(f)} style={{
+              padding: '5px 12px', borderRadius: 6, fontSize: 11, fontWeight: 600,
+              border: '1px solid ' + (filter === f ? 'var(--accent)' : 'var(--border)'),
+              background: filter === f ? 'var(--accent-soft)' : 'var(--bg-1)',
+              color: filter === f ? 'var(--accent)' : 'var(--text-dim)',
+              cursor: 'pointer', letterSpacing: 0.3
+            }}>{labels[f]}</button>
+          ))}
+        </div>
+      </div>
+
+      <div style={{
+        display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 10, marginBottom: 16,
+        padding: 12, background: 'var(--bg-3)', borderRadius: 8, border: '1px solid var(--border)'
+      }}>
+        <div>
+          <div style={{ fontSize: 10, color: 'var(--text-faint)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 3, fontWeight: 600 }}>Customer Since</div>
+          <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)' }}>{CUSTOMER_DATES.goLive}</div>
+          <div style={{ fontSize: 10, color: 'var(--text-faint)', marginTop: 2 }}>Go-live</div>
+        </div>
+        <div>
+          <div style={{ fontSize: 10, color: 'var(--text-faint)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 3, fontWeight: 600 }}>Current Term Started</div>
+          <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)' }}>{CUSTOMER_DATES.currentTermStart}</div>
+          <div style={{ fontSize: 10, color: 'var(--text-faint)', marginTop: 2 }}>Original contract</div>
+        </div>
+        <div>
+          <div style={{ fontSize: 10, color: 'var(--text-faint)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 3, fontWeight: 600 }}>Renewal Signed</div>
+          <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--green)' }}>{CUSTOMER_DATES.renewalSigned}</div>
+          <div style={{ fontSize: 10, color: 'var(--text-faint)', marginTop: 2 }}>2-year DocuSign</div>
+        </div>
+        <div>
+          <div style={{ fontSize: 10, color: 'var(--text-faint)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 3, fontWeight: 600 }}>New Term Through</div>
+          <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)' }}>{CUSTOMER_DATES.newTermEnd}</div>
+          <div style={{ fontSize: 10, color: 'var(--text-faint)', marginTop: 2 }}>Next renewal</div>
+        </div>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 10 }}>
+        {filtered.map((c, i) => (
+          <div key={i} style={{
+            background: colors[c.type].bg,
+            border: '1px solid var(--border)',
+            borderRadius: 8, padding: 12,
+            borderLeft: '3px solid ' + colors[c.type].c
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4, gap: 6 }}>
+              <div style={{ fontSize: 10, color: colors[c.type].c, textTransform: 'uppercase', letterSpacing: 1, fontWeight: 700 }}>{c.category}</div>
+              {c.overdue && (
+                <span style={{
+                  fontSize: 9, color: 'var(--red)', background: 'var(--red-soft)',
+                  border: '1px solid var(--red)', borderRadius: 4,
+                  padding: '1px 6px', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase'
+                }}>⚠ Overdue</span>
+              )}
+            </div>
+            <div style={{ fontSize: 13, color: 'var(--text)', marginBottom: 8, lineHeight: 1.45 }}>{c.text}</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+              <span style={{
+                fontSize: 10, color: 'var(--text)', background: 'var(--bg-1)',
+                border: '1px solid var(--border)', borderRadius: 4, padding: '1px 6px',
+                fontWeight: 600, fontFamily: 'ui-monospace, "SF Mono", Menlo, monospace'
+              }}>{c.date}</span>
+              <span style={{ fontSize: 10, color: 'var(--text-faint)' }}>· {c.source}</span>
+            </div>
+            <div style={{ fontSize: 10, color: 'var(--text-faint)', fontStyle: 'italic', lineHeight: 1.4 }}>↳ {c.citation}</div>
+          </div>
+        ))}
+      </div>
+    </Card>
+  );
+};
+
+// ============================================================
+// Stakeholders
+// ============================================================
+const Stakeholders = () => {
+  const signalColor = {
+    champion: { c: 'var(--green)', bg: 'var(--green-soft)', label: 'Champion' },
+    engaged: { c: 'var(--accent-2)', bg: 'var(--accent-2-soft)', label: 'Engaged' },
+    watchful: { c: 'var(--yellow)', bg: 'var(--yellow-soft)', label: 'Watchful' },
+  };
+  return (
+    <Card style={{ marginBottom: 24 }}>
+      <div style={{ marginBottom: 16 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4, flexWrap: 'wrap' }}>
+          <h2 style={{ fontSize: 16, fontWeight: 600, color: 'var(--text)' }}>Stakeholder Map</h2>
+          <SourceBadges sources={['Gainsight', 'Staircase']} />
+        </div>
+        <div style={{ fontSize: 12, color: 'var(--text-dim)' }}>Key contacts with engagement signal · {STAKEHOLDERS.length} stakeholders identified</div>
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 12 }}>
+        {STAKEHOLDERS.map((s, i) => {
+          const sig = signalColor[s.signal];
+          return (
+            <div key={i} style={{
+              background: 'var(--bg-3)',
+              border: '1px solid var(--border)',
+              borderRadius: 8, padding: 14,
+              position: 'relative', overflow: 'hidden'
+            }}>
+              <div style={{ position: 'absolute', top: 0, left: 0, width: 3, height: '100%', background: sig.c }} />
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
+                <div>
+                  <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 2, color: 'var(--text)' }}>{s.name}</div>
+                  <div style={{ fontSize: 11, color: 'var(--text-dim)' }}>{s.role}</div>
+                </div>
+                <Pill color={sig.c} bg={sig.bg}>{sig.label}</Pill>
+              </div>
+              <div style={{ fontSize: 12, color: 'var(--text-body)', lineHeight: 1.5, marginBottom: 8 }}>{s.note}</div>
+              <div style={{ display: 'flex', gap: 10, fontSize: 10, color: 'var(--text-faint)' }}>
+                <span>Depth: <span style={{ color: 'var(--text-dim)' }}>{s.depth}</span></span>
+                <span>·</span>
+                <span>Last touch: <span style={{ color: 'var(--text-dim)' }}>{s.lastTouch}</span></span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </Card>
+  );
+};
+
+// ============================================================
+// Engagement + Risk
+// ============================================================
+const EngagementAndRisk = () => {
+  const statusColor = { green: 'var(--green)', yellow: 'var(--yellow)', red: 'var(--red)' };
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: 24, marginBottom: 24 }}>
+      <Card>
+        <div style={{ marginBottom: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4, flexWrap: 'wrap' }}>
+            <h2 style={{ fontSize: 16, fontWeight: 600, color: 'var(--text)' }}>Adoption & Engagement Signals</h2>
+            <SourceBadges sources={['PX', 'Community', 'Skilljar', 'Scorecard']} />
+          </div>
+          <div style={{ fontSize: 12, color: 'var(--text-dim)' }}>Cross-product signals from connected products</div>
+        </div>
+        <div style={{ display: 'grid', gap: 8 }}>
+          {ENGAGEMENT_SIGNALS.map((s, i) => (
+            <div key={i} style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10,
+              padding: '10px 12px', background: 'var(--bg-3)', borderRadius: 8,
+              borderLeft: '3px solid ' + statusColor[s.status]
+            }}>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ marginBottom: 4 }}>
+                  <SourceBadge source={s.source} />
+                </div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)' }}>{s.value}</div>
+              </div>
+              <div style={{ fontSize: 11, color: 'var(--text-dim)', textAlign: 'right', maxWidth: 180 }}>{s.detail}</div>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      <Card>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16, flexWrap: 'wrap', gap: 12 }}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4, flexWrap: 'wrap' }}>
+              <h2 style={{ fontSize: 16, fontWeight: 600, color: 'var(--text)' }}>Risk Radar</h2>
+              <SourceBadges sources={['Cockpit', 'Staircase']} />
+            </div>
+            <div style={{ fontSize: 12, color: 'var(--text-dim)' }}>17 risk CTAs total · 7 high priority surfaced</div>
+          </div>
+          <Pill color="var(--red)" bg="var(--red-soft)">{RISKS.length} open</Pill>
+        </div>
+        <div style={{ display: 'grid', gap: 8 }}>
+          {RISKS.map((r, i) => (
+            <div key={i} style={{
+              padding: 12, background: 'var(--bg-3)', borderRadius: 8,
+              borderLeft: '3px solid ' + (r.priority === 'High' ? 'var(--red)' : 'var(--yellow)')
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4, gap: 8 }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)' }}>{r.name}</div>
+                <Pill color={r.priority === 'High' ? 'var(--red)' : 'var(--yellow)'} bg={r.priority === 'High' ? 'var(--red-soft)' : 'var(--yellow-soft)'}>{r.priority}</Pill>
+              </div>
+              <div style={{ fontSize: 11, color: 'var(--text-body)', marginBottom: 6 }}>{r.note}</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 10, color: 'var(--text-faint)' }}>
+                <span>Owner: {r.owner}</span>
+                <span>·</span>
+                <SourceBadge source={r.source} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </Card>
+    </div>
+  );
+};
+
+// ============================================================
+// Success Plans
+// ============================================================
+const SuccessPlans = () => (
+  <Card style={{ marginBottom: 24 }}>
+    <div style={{ marginBottom: 16 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4, flexWrap: 'wrap' }}>
+        <h2 style={{ fontSize: 16, fontWeight: 600, color: 'var(--text)' }}>Active Success Plans</h2>
+        <SourceBadges sources={['Gainsight']} />
+      </div>
+      <div style={{ fontSize: 12, color: 'var(--text-dim)' }}>{SUCCESS_PLANS.length} plans in motion · Recommend hygiene review week 1</div>
+    </div>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 12 }}>
+      {SUCCESS_PLANS.map((p, i) => (
+        <div key={i} style={{ background: 'var(--bg-3)', borderRadius: 8, padding: 14, border: '1px solid var(--border)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+            <div style={{ fontSize: 13, fontWeight: 600, flex: 1, color: 'var(--text)' }}>{p.name}</div>
+            <span style={{ fontSize: 18, fontWeight: 700, color: 'var(--accent)' }}>{p.objectives}</span>
+          </div>
+          <div style={{ fontSize: 11, color: 'var(--text-faint)', marginBottom: 6 }}>Owner: {p.owner}</div>
+          <div style={{ fontSize: 12, color: 'var(--text-body)', lineHeight: 1.5 }}>{p.note}</div>
+        </div>
+      ))}
+    </div>
+  </Card>
+);
+
+// ============================================================
+// Ask the Analyst
+// ============================================================
+const AskAnalyst = () => {
+  const [open, setOpen] = useState(null);
+  const renderLine = (line, idx) => {
+    const parts = line.split(/(\*\*[^*]+\*\*)/g);
+    return (
+      <div key={idx} style={{ marginBottom: line === '' ? 8 : 0 }}>
+        {parts.map((p, pi) =>
+          p.startsWith('**') && p.endsWith('**')
+            ? <strong key={pi} style={{ color: 'var(--text)' }}>{p.slice(2, -2)}</strong>
+            : <span key={pi}>{p}</span>
+        )}
+      </div>
+    );
+  };
+  return (
+    <Card glow={true} style={{ marginBottom: 24, borderLeft: '3px solid var(--accent-2)' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8, flexWrap: 'wrap', gap: 12 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div style={{
+            width: 28, height: 28, borderRadius: 6, background: 'var(--accent-2)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, color: '#fff'
+          }}>💬</div>
+          <h2 style={{ fontSize: 16, fontWeight: 600, color: 'var(--text)' }}>Ask the Handoff Analyst</h2>
+        </div>
+        <SourceBadges sources={['Gainsight', 'Staircase', 'PX', 'Community', 'Skilljar']} />
+      </div>
+      <div style={{ fontSize: 12, color: 'var(--text-dim)', marginBottom: 16 }}>Pre-canned answers grounded in Gainsight + Staircase data · Click any question</div>
+      <div style={{ display: 'grid', gap: 8 }}>
+        {ANALYST_QA.map((qa, i) => (
+          <div key={i} style={{
+            background: 'var(--bg-3)', borderRadius: 8, border: '1px solid var(--border)',
+            overflow: 'hidden'
+          }}>
+            <button
+              onClick={() => setOpen(open === i ? null : i)}
+              style={{
+                width: '100%', textAlign: 'left', padding: 14, background: 'transparent',
+                border: 'none', color: 'var(--text)', cursor: 'pointer',
+                display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10,
+                fontSize: 13, fontWeight: 500
+              }}
+            >
+              <span>{qa.q}</span>
+              <span style={{ color: 'var(--accent-2)', fontSize: 16, transform: open === i ? 'rotate(90deg)' : 'none', transition: 'transform 0.2s' }}>›</span>
+            </button>
+            {open === i && (
+              <div style={{
+                padding: '14px', fontSize: 13, color: 'var(--text-body)', lineHeight: 1.65,
+                borderTop: '1px solid var(--border)', whiteSpace: 'pre-wrap', background: 'var(--bg-1)'
+              }}>
+                {qa.a.split('\n').map(renderLine)}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </Card>
+  );
+};
+
+// ============================================================
+// Footer
+// ============================================================
+const Footer = () => (
+  <div style={{ padding: '24px 40px', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12, fontSize: 11, color: 'var(--text-faint)' }}>
+    <div>Handoff Analyst · Pulse 2026 SC Demo · Data snapshotted from CSMCP-Demo + Staircase AI</div>
+    <div style={{ display: 'flex', gap: 16 }}>
+      <span>CSM: {ACCOUNT.csm}</span>
+      <span>SC: {ACCOUNT.solutionsConsultant}</span>
     </div>
   </div>
 );
+
+// ============================================================
+// App
+// ============================================================
+const App = () => {
+  const [theme, setTheme] = useState('light');
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
+
+  return (
+    <div>
+      <div style={{ maxWidth: 1400, margin: '0 auto' }}>
+        <Header theme={theme} setTheme={setTheme} />
+      </div>
+      <StickyNav />
+      <div style={{ maxWidth: 1400, margin: '0 auto' }}>
+        <div style={{ padding: '24px 40px' }}>
+          <div id="brief"><HandoffBrief /></div>
+          <TopStats />
+          {HAS_PRIOR_CSM && <div id="quarterback"><QuarterbackMap /></div>}
+          <div id="reconciliation"><SignalReconciliation /></div>
+          <div id="commitments"><Commitments /></div>
+          <div id="stakeholders"><Stakeholders /></div>
+          <div id="signals"><div id="risks"><EngagementAndRisk /></div></div>
+          <div id="plans"><SuccessPlans /></div>
+          <div id="qa"><AskAnalyst /></div>
+        </div>
+        <Footer />
+      </div>
+    </div>
+  );
+};
 
 try {
   ReactDOM.createRoot(document.getElementById('root')).render(<App />);
 } catch (err) {
   document.getElementById('root').innerHTML =
-    '<div style="padding:40px;color:#f77271;font-family:monospace;">' +
+    '<div style="padding:40px;color:#dc3626;font-family:monospace;">' +
     '<h2 style="margin-bottom:12px;">Render Error</h2>' +
-    '<pre style="white-space:pre-wrap;background:#1d2235;padding:16px;border-radius:8px;">' +
+    '<pre style="white-space:pre-wrap;background:#fdf2f1;padding:16px;border-radius:8px;">' +
     (err && err.message ? err.message : String(err)) +
     '\n\n' + (err && err.stack ? err.stack : '') +
     '</pre></div>';
